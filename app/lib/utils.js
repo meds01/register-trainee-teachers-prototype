@@ -15,7 +15,7 @@ const generateReference      = require('./../data/generators/reference-number')
 const academicQualifications = require('./../data/academic-qualifications.js')
 const years                  = require('./../data/years.js')
 
-let skipCourseDatesPage = true
+let skipCourseDatesPage = false
 
 // -------------------------------------------------------------------
 // General
@@ -143,14 +143,24 @@ exports.yearToAcademicYearString = year => {
   return `${year} to ${yearInt + 1}`
 }
 
-// "2022 to 2023" -> "2022"
-exports.academicYearStringToYear = string => {
-  if (string) return string.substring(0, 4)
+// "2022 to 2023" -> 2022
+exports.academicYearToYear = string => {
+  if (string) return parseInt(string.substring(0, 4))
   else return false
+}
+
+// Add or remove from an academic year string
+// "2022 to 2023", 2 -> "2024 to 2025"
+exports.incrimentOrDecrimentAcademicYearString = (string, count) => {
+  let yearStart = exports.academicYearToYear(string) + count
+  return exports.yearToAcademicYearString(yearStart)
 }
 
 // Return the academic year that a date falls in
 exports.dateToAcademicYear = date => {
+  if (Array.isArray(date)){
+    date = dates.arrayToDateObject(date)
+  }
   let theDate = moment(date)
   if (!theDate.isValid()){
     console.log(`Error in dateToAcademicYear: provided date (${theDate, date}) is invalid`)
@@ -165,7 +175,7 @@ exports.dateToAcademicYear = date => {
   else return exports.yearToAcademicYearString(theYear)
 }
 
-exports.setAcademicYear = record => {
+exports.setStartAcademicYear = record => {
   let courseStartDate = record?.courseDetails?.courseStartDate
   let traineeStartDate = record?.trainingDetails?.commencementDate
   if (!courseStartDate){
@@ -178,10 +188,22 @@ exports.setAcademicYear = record => {
     let academicYear = exports.dateToAcademicYear(compareDate)
     if (academicYear) {
       record.academicYear = academicYear
+      record.courseDetails.academicYear = academicYear
     }
     return record
   }
 }
+
+exports.setEndAcademicYear = record => {
+
+  let endAcademicYear = exports.calculateEndAcademicYear(record)
+
+  if (endAcademicYear){
+    record.endAcademicYear = endAcademicYear
+  }
+  return record
+}
+
 
 // Check if the course has allocated places
 exports.hasAllocatedPlaces = (record) => {
@@ -1048,14 +1070,28 @@ exports.isWithdrawn = record => {
   return record?.status == "Withdrawn"
 }
 
+// Todo: this should probably combine with the active stuff
+exports.isInTraining = record => {
+
+  let isActiveStatus = [
+    "Pending TRN",
+    "TRN received",
+    "QTS recommended",
+    "EYTS recommended"
+  ].includes(record.status)
+
+  let ittInTheFuture = exports.ittInTheFuture(record)
+  return isActiveStatus && !ittInTheFuture
+}
+
 // Active statuses – trainee hasn’t finished their training
 // (not ‘qualified’ or ‘withdrawn’)
 exports.isActiveStatus = record => {
   return [
-    "Pending TRN", 
-    "TRN received", 
-    "QTS recommended", 
-    "EYTS recommended", 
+    "Pending TRN",
+    "TRN received",
+    "QTS recommended",
+    "EYTS recommended",
     "Deferred"
   ].includes(record.status)
 }
@@ -1099,25 +1135,74 @@ exports.isPreviousYears = record => {
   return !exports.isCurrentYear(record) && !exports.isFutureYear(record)
 }
 
-// Get end year
-exports.getEndAcademicYear = record => {
-  return moment(record?.courseDetails?.endDate).format("YYYY")
+// The academic year in which the trainee is due to finish or did finish
+exports.getEndAcademicYear = record => record.endAcademicYear
+
+// Use the course duration to derive an end academic year
+// This is used where we don’t have course end dates - such as for 
+// HESA records
+exports.calculateCourseEndAcademicYear = record => {
+  if (record?.courseDetails?.duration){
+
+    // A duration of 1 would mean you finish same year - so decriment by one
+    let duration = record.courseDetails.duration - 1
+    if (duration == 0) return record?.academicYear
+    else {
+      return exports.incrimentOrDecrimentAcademicYearString(record?.academicYear, duration)
+    }
+  }
+  else return false
+}
+
+// End academic year depends on the trainee status and what data
+// we have available
+exports.calculateEndAcademicYear = record => {
+  
+  if (exports.isAwarded(record)){
+    return exports.dateToAcademicYear(record?.qualificationAwardedDate)
+  }
+  else if (exports.isWithdrawn(record)){
+    return exports.dateToAcademicYear(record?.withdrawalDate)
+  }
+  // Prefer course ITT end date if we have it
+  else if (record?.courseDetails?.endDate){
+    return exports.dateToAcademicYear(record?.courseDetails?.endDate)
+    // return moment(record?.courseDetails?.endDate).format("YYYY")
+  }
+  // Fall back on course duration
+  else if (record?.courseDetails?.duration){
+    return exports.calculateCourseEndAcademicYear(record)
+  }
+  else return false
+
 }
 
 // Check if record is finishing this year
+// Todo: rename this to not be future tense
 exports.isFinishingThisAcademicYear = record => {
-  return exports.getEndAcademicYear(record) == years.endOfCurrentCycle
+  return exports.getEndAcademicYear(record) == years.currentAcademicYear
 }
 
 // Check if record finished earlier than this year
 exports.finishedEarlierThanThisAcademicYear = record => {
-  return exports.getEndAcademicYear(record) < years.endOfCurrentCycle
+  // 2022 to 2023
+  let endAcademicYear = exports.getEndAcademicYear(record)
+  // 2022
+  let endAcademicYearSimple = exports.academicYearToYear(endAcademicYear)
+  return endAcademicYearSimple < years.currentAcademicYearSimple
 }
 
 // HESA records will be locked until 14 April of the last year of the course
 // (this is based on last HESA update, but also arbitrary)
 exports.dateHesaRecordUnlocked = record => {
-  return moment(`${exports.getEndAcademicYear(record)}-04-14`).format("YYYY-MM-DD")
+  let endCalendarYear
+  if (record?.courseDetails?.endDate){
+    let endCalendarYear = moment(record?.courseDetails?.endDate).format("YYYY")
+  }
+  else {
+    endCalendarYear = exports.academicYearToYear(exports.getEndAcademicYear(record)) + 1
+  }
+  return moment(`${endCalendarYear}-04-14`).format("YYYY-MM-DD")
 }
 
 /* 
@@ -1281,7 +1366,7 @@ exports.recordIsComplete = function(record, data=false ) {
       'EYTS awarded',
       'QTS recommended',
       'QTS awarded',
-      'Deferred',
+      // 'Deferred',
       'Withdrawn'
     ]
     if (statusesThatMustBeComplete.includes(record?.status)) return true
@@ -1498,12 +1583,40 @@ exports.filterRecords = (records, data, filters = {}) => {
   // Only show records for currently enabled routes or draft records
   filteredRecords = filteredRecords.filter(record => enabledTrainingRoutes.includes(record.route) || (exports.isDraft(record)))
 
-  if (filters.cohortFilter){
-    filteredRecords = filteredRecords.filter(record => filters.cohortFilter.includes(exports.getCohortFilter(record)))
+  if (filters.trainingStatus){
+    filteredRecords = filteredRecords.filter(record => {
+      if (filters.trainingStatus.includes(record.status)) {
+        return true
+      }
+      else if (filters.trainingStatus.includes("Course not started yet") && exports.ittInTheFuture(record)){
+        return true
+      }
+      else if (filters.trainingStatus.includes("Awarded") && record.status && record.status.includes("awarded")){
+        return true
+      }
+      else if (filters.trainingStatus.includes("In training") && exports.isInTraining(record)){
+        return true
+      }
+      else return false
+    })
   }
 
-  if (filters.cycle && filters.cycle != "All years"){
-    filteredRecords = filteredRecords.filter(record => filters.cycle.includes(record.academicYear))
+  // Combined start and end years - not currently used
+  // if (filters.years && filters.years != "All years"){
+  //   filteredRecords = filteredRecords.filter(record => filters.years.includes(record.academicYear))
+  // }
+
+  if (filters.startYears && filters.startYears != "All years"){
+    filteredRecords = filteredRecords.filter(record => filters.startYears.includes(record.academicYear))
+  }
+
+  if (filters.endYears && filters.endYears != "All years"){
+    console.log(filters.endYears)
+    filteredRecords = filteredRecords.filter(record => filters.endYears.includes(record.endAcademicYear))
+  }
+
+  if (filters.cohortFilter){
+    filteredRecords = filteredRecords.filter(record => filters.cohortFilter.includes(exports.getCohortFilter(record)))
   }
 
   if (filters.completeStatus){
@@ -1696,6 +1809,24 @@ exports.filterBySignedIn = function(records, data=false){
 // Only records from a specific academic year or years
 exports.filterByYear = (records, array) => {
   return exports.filterRecordsBy(records, 'academicYear', array)
+}
+
+// Filter records by status
+exports.filterByInTraining = (records) => {
+  return records.filter(record => exports.isInTraining(record) )
+  // return records.filter(record => true )
+}
+
+// Filter records by status
+exports.filterByFunction = (records, functionName) => {
+  let theFunction = exports[functionName]
+  if (theFunction && typeof theFunction == 'function'){
+    return records.filter(record => theFunction(record) )
+  }
+  else {
+    console.log(`Error with filterByFunction: ${functionName} is not a function`)
+    return records
+  }
 }
 
 // Filter records by status

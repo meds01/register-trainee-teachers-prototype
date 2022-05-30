@@ -7,9 +7,10 @@
 {% set draftRecords = filteredRecords | filterByStatus("Draft") %}
 {% set totalDraftCount = draftRecords | length %}
 {% set applyDraftCount = draftRecords | where("source", "Apply") | length %}
+
 {% set registeredTrainees = filteredRecords | filterByStatus("Draft", true) %}
 {% set pageHeading = "Your trainee teachers" %}
-{% set currentTrainees = registeredTrainees | filterByActive %}
+{# {% set currentTrainees = registeredTrainees | filterByActive %} #}
 
 {% block content %}
 
@@ -28,11 +29,11 @@
       <div class="govuk-grid-column-two-thirds-from-desktop">
         <h2 class="govuk-heading-l">Draft trainees</h2>
         <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-0">
-          {% if totalDraftCount != applyDraftCount %}
+          {% if (totalDraftCount > 0) and totalDraftCount != applyDraftCount %}
             <li><a class="govuk-link" href="/drafts">View all draft trainees ({{ totalDraftCount }})</a></li>
           {%  endif %}
           {% if applyDraftCount > 0 %}
-            <li><a class="govuk-link" href="/drafts?filterSource=Apply">View draft trainees imported from Apply ({{applyDraftCount}})</a></li>
+            <li><a class="govuk-link" href="/drafts?filterSource=Apply">View draft trainees imported from Apply ({{applyDraftCount}}{% if totalDraftCount != applyDraftCount %} out of {{totalDraftCount}} draft trainees{% endif %})</a></li>
           {% endif %}
 
           {% if isAuthorised('addTrainees') %}
@@ -57,23 +58,79 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
       <h2 class="govuk-heading-l">Registered trainees</h2>
-      <ul class="govuk-list govuk-list--spaced">
+
+      {# <ul class="govuk-list govuk-list--spaced">
         <li><a class="govuk-link" href="/records?filterCycle=_unchecked">View all registered trainees ({{ registeredTrainees | length }})</a></li>
         {% if registeredTrainees | filterByFuture | length > 0 %}
           <li><a class="govuk-link" href="/records?filterCohortFilter=Next+year’s">View next year’s trainees ({{ registeredTrainees | filterByFuture | length }})</a></li>
         {% endif %}
       </ul>
-      <h3 class="govuk-heading-m">Current trainees</h3>
-      <p class="govuk-body">
+      <h3 class="govuk-heading-m">Current trainees</h3> #}
+      {# <p class="govuk-body">
         <a class="govuk-link govuk-body" href="/records?filterCycle=_unchecked&filterCohortFilter=Current">View current trainees ({{ currentTrainees | length }})</a>
-      </p>
+      </p> #}
     </div>
   </div>
+
+
+
   <div class="govuk-grid-row">
+
     <div class="govuk-grid-column-full">
 
+      <div class="app-home-statuses app-home-statuses--3-up govuk-!-margin-bottom-4">
 
+        {# Upcoming #}
+        {% set coursenNotYetStarted = registeredTrainees | filterByFunction('ittInTheFuture') %}
+        <a href="#" class="status-card status-card--in-training">
+          <span class="status-card__count">{{coursenNotYetStarted | length}}</span>
+          <span class="status-card__status">Course not started yet</span><span class="govuk-visually-hidden">. View these records.</span>
+        </a>
 
+        {# In training #}
+        {% set traineesInTraining = registeredTrainees | filterByFunction('isInTraining') %}
+        <a href="/records?&filterTrainingStatus=In training" class="status-card status-card--in-training">
+          <span class="status-card__count">{{traineesInTraining | length}}</span>
+          <span class="status-card__status">In training</span><span class="govuk-visually-hidden">. View these records.</span>
+        </a>
+
+        {# Awarded this year #}
+        {% set traineesAwarded = registeredTrainees | filterByFunction('isAwarded') %}
+        {% set traineesAwardedThisYear = traineesAwarded | filterByFunction('isFinishingThisAcademicYear') %}
+        <a href="/records?filterTrainingStatus=Awarded&filterEndYears={{ data.years.currentAcademicYear }}" class="status-card status-card--awarded">
+          <span class="status-card__count">{{traineesAwardedThisYear | length}}</span>
+          <span class="status-card__status">Awarded this year</span><span class="govuk-visually-hidden">. View these records.</span>
+        </a>
+
+        {# Currently deferred #}
+        {% set deferredTrainees = registeredTrainees | filterByFunction('isDeferred') %}
+
+        <a href="/records?filterTrainingStatus=Deferred" class="status-card status-card--deferred">
+          <span class="status-card__count">{{ deferredTrainees | length }}</span>
+          <span class="status-card__status">Currently deferred</span><span class="govuk-visually-hidden"> records. View these records.</span>
+        </a>
+
+        {# Incomplete #}
+        {% set incompleteTrainees = registeredTrainees | filterByIncomplete %}
+        {% set activeTrainees = registeredTrainees | filterByFunction('isActiveStatus') %}
+        {% set incompleteExplanation %}
+          <br>(out of {{activeTrainees | length}})
+        {% endset %}
+
+        {# Disabled for now #}
+        {% set incompleteExplanation = "" %}
+
+        <a href="/records?filterCompleteStatus=Incomplete" class="status-card status-card status-card--incomplete">
+          <span class="status-card__count">{{ incompleteTrainees | length }}</span>
+          <span class="status-card__status">Incomplete records{{incompleteExplanation | safe}}</span><span class="govuk-visually-hidden"> records. View these records.</span>
+        </a>
+      </div>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+  </div>
+
+  {# <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
       <div class="app-home-statuses govuk-!-margin-bottom-4">
 
           {% set statuses = ["Pending TRN", "TRN received", "Recommended", "Awarded", "Deferred", "Withdrawn"] %}
@@ -99,7 +156,7 @@
       </div>
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
-  </div>
+  </div> #}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
       <h2 class="govuk-heading-l">News, guidance and feedback</h2>

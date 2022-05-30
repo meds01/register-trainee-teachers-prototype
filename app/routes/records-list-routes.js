@@ -37,12 +37,15 @@ const getFilters = req => {
   'filterAllProviders',
   'filterCompleteStatus',
   'filterCourseLevel',
-  'filterCycle',
+  'filterYears',
+  'filterStartYears',
+  'filterEndYears',
   'filterPhase',
   'filterSource',
   'filterStatus',
   'filterStudyMode',
   'filterTrainingRoutes',
+  'filterTrainingStatus',
   'filterUserProviders']
   filtersToClean.forEach(filter => query[filter] = cleanInputData(query[filter]))
 
@@ -54,12 +57,15 @@ const getFilters = req => {
     source: query.filterSource,
     completeStatus: query.filterCompleteStatus,
     courseLevel: query.filterCourseLevel,
-    cycle: query.filterCycle,
+    years: query.filterYears,
+    startYears: query.filterStartYears,
+    endYears: query.filterEndYears,
     phase: query.filterPhase,
     studyMode: query.filterStudyMode,
     providers: query.filterUserProviders,
     allProviders: query.filterAllProviders,
     trainingRoutes: query.filterTrainingRoutes,
+    trainingStatus: query.filterTrainingStatus,
     subject: query.filterSubject
   }
 
@@ -87,9 +93,11 @@ const getHasFilters = (filters, searchQuery) => {
   || !!(searchQuery)
   || !!(filters.subject && filters.subject != 'All subjects')
 
-  || !!(filters.cycle && filters.cycle != 'All years')
-
+  || !!(filters.years && filters.years != 'All years')
+  || !!(filters.startYears && filters.startYears != 'All years')
+  || !!(filters.endYears && filters.endYears != 'All years')
   || !!(filters.trainingRoutes)
+  || !!(filters.trainingStatus)
   || !!(filters.providers)
   || !!(filters.allProviders && filters.allProviders != 'All providers')
 }
@@ -143,13 +151,75 @@ const getSelectedFilters = req => {
     })
   }
 
-  if (filters.cycle && filters.cycle != 'All years') {
+  if (filters.trainingStatus) {
+    selectedFilters.categories.push({
+      heading: { text: 'Training status' },
+      items: filters.trainingStatus.map((status) => {
+
+        let newQuery = Object.assign({}, query)
+        newQuery.filterTrainingStatus = filters.trainingStatus.filter(a => a != status)
+
+        return {
+          text: status,
+          href: url.format({
+            pathname,
+            query: newQuery,
+          })
+        }
+      })
+    })
+  }
+
+  // Combined start and end years select - not currently used
+  if (filters.years && filters.years != 'All years') {
     let newQuery = Object.assign({}, query)
-    delete newQuery.filterCycle
+    delete newQuery.filterYears
+    let headingText = "Year"
+    // Show conditional heading depending on if it’s a start or end year
+    if (filters.years[0].startsWith("End year")){
+      headingText = "End year"
+    }
+    else if (filters.years[0].startsWith("Start year")){
+      headingText = "Start year"
+    }
+
+    let tagLabelText = filters.years[0].replace("End year: ", "").replace("Start year: ", "")
+    selectedFilters.categories.push({
+      heading: { text: headingText },
+      items: [{
+        text: tagLabelText,
+        href: url.format({
+          pathname,
+          query: newQuery,
+        })
+      }]
+    })
+  }
+
+  // Start years
+  if (filters.startYears && filters.startYears != 'All years') {
+    let newQuery = Object.assign({}, query)
+    delete newQuery.filterStartYears
     selectedFilters.categories.push({
       heading: { text: "Start year" },
       items: [{
-        text: filters.cycle,
+        text: filters.startYears,
+        href: url.format({
+          pathname,
+          query: newQuery,
+        })
+      }]
+    })
+  }
+
+  // End years
+  if (filters.endYears && filters.endYears != 'All years') {
+    let newQuery = Object.assign({}, query)
+    delete newQuery.filterEndYears
+    selectedFilters.categories.push({
+      heading: { text: "End year" },
+      items: [{
+        text: filters.endYears,
         href: url.format({
           pathname,
           query: newQuery,
@@ -324,6 +394,8 @@ const getSelectedFilters = req => {
     })
   }
 
+
+
   if (filters.subject && filters.subject != 'All subjects') {
     let newQuery = Object.assign({}, query)
     delete newQuery.filterSubject
@@ -359,7 +431,8 @@ module.exports = router => {
     let hasQueryString = Boolean(Object.keys(req.query).length)
 
     // by default set search results to show "Current" trainees
-    if (!hasQueryString) filters.cohortFilter = ["Current"]
+    // if (!hasQueryString) filters.cohortFilter = ["Current"]
+    if (!hasQueryString) filters.trainingStatus = ["In training"]
 
     let searchQuery = getSearchQuery(req)
 

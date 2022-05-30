@@ -16,6 +16,8 @@ const trainingRouteData = require('../app/data/training-route-data')
 const seedRecords       = require('../app/data/seed-records')
 const statuses          = require('../app/data/status')
 const courses           = require('../app/data/courses.json')
+const utils             = require('../app/lib/utils.js')
+const years             = require('../app/data/years.js')
 const accreditingProviderData      = require('../app/data/accrediting-providers.js')
 const providers         = accreditingProviderData.selected
 const statusFilters          = require('./../app/filters/statuses.js').filters
@@ -26,7 +28,8 @@ let simpleGcseGrades    = true //output pass/fail rather than full detail
 // Todo: get this from the years.js file?
 const defaultYearsToGenerate = [2017, 2018, 2019, 2020, 2021, 2022]
 const reducedYearsToGenerate = [2020, 2021, 2022]
-const currentYear     = 2021
+
+const currentYear     = years.currentAcademicYearSimple
 
 const sortBySubmittedDate = (x, y) => {
   return new Date(y.submittedDate) - new Date(x.submittedDate);
@@ -171,6 +174,11 @@ const generateFakeApplication = (params = {}) => {
     application = generateHesaData(application)
   }
 
+  if (params.endAcademicYear) application.endAcademicYear = params.endAcademicYear
+  else {
+    application = utils.setEndAcademicYear(application)
+  }
+
   application.outcome = (params.outcome === null) ? undefined : { ...generateOutcomes(application), ...params.outcome }
 
   return application
@@ -245,8 +253,8 @@ const generateFakeApplicationsForProvider = (provider, year, count) => {
     targetCounts = {
       draft: (isScitt) ? 0.20 : 0.9,
       applyEnrolled: (isScitt) ? 0.70 : 0,
-      pendingTrn: 0.05,
-      trnReceived: 0.05,
+      pendingTrn: 0.01,
+      trnReceived: 0.01,
       qualificationRecommended: 0.00,
       qualificationAwarded: 0.00,
       deferred: 0.00,
