@@ -49,6 +49,11 @@ exports.pickRandom = (array, randomFunction = Math.random) => {
   return array[Math.floor(randomFunction() * array.length)]
 }
 
+// Random number between x and y
+exports.getRandomArbitrary = (min, max) => {
+  return Math.floor(Math.random() * (max - min) + min)
+}
+
 // Sort two things alphabetically, not case-sensitive
 exports.sortAlphabetical = (x, y) => {
   if(x.toLowerCase() !== y.toLowerCase()) {
@@ -1996,6 +2001,13 @@ exports.getProviderData = function(input, data=false){
 
   const lookUpProvider = provider => {
     let item
+    if (provider == "System admin"){
+      return {
+        name: 'System admin',
+        type: 'admin'
+      }
+    }
+
     if (data?.providers?.all){
       item = data.providers.all.find(item => item.name == provider) || false
     }
@@ -2013,8 +2025,55 @@ exports.getProviderData = function(input, data=false){
 exports.getProviderType = function(provider, data=false){
   data = data || this?.ctx?.data || false
 
-  let found = data?.providers?.all && data.providers.all.find(item => item.name == provider)
-  return found?.type || false
+  let allProviders = data?.providers?.all
+
+  // Handle the admin provider
+  if (provider == "System admin" || provider.type == "System admin") return 'admin'
+
+  let output = false
+
+  if (!allProviders) {
+    console.log("Error with getProviderType: data not provided")
+    return false
+  }
+
+  // Provider object
+  if (_.isObject(provider)){
+    output = allProviders.find(item => provider.id == item.id)
+  }
+  // String name of provider
+  else {
+    output = allProviders.find(item => provider == item.name)
+  }
+
+  return output?.type
+
+}
+
+// Get a human readable provider type eg `lead school`,
+exports.getProviderTypeString = (input) => {
+
+  let type
+  if (_.isObject(input)){
+    type = input.type
+  }
+  else type = input
+
+  switch (type) {
+    case 'accreditingProvider':
+      // if (input.accreditingProviderType){
+      //   return input.accreditingProviderType
+      // }
+      // else
+        return 'accrediting provider'
+      break;
+    case 'leadSchool':
+      return 'lead school'
+      break;
+    default:
+      return type
+  }
+
 }
 
 exports.providerIsAccrediting = function(provider, data=false){

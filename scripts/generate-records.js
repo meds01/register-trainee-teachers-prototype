@@ -20,7 +20,8 @@ const utils             = require('../app/lib/utils.js')
 const years             = require('../app/data/years.js')
 const accreditingProviderData      = require('../app/data/accrediting-providers.js')
 const providers         = accreditingProviderData.selected
-const statusFilters          = require('./../app/filters/statuses.js').filters
+const statusFilters     = require('./../app/filters/statuses.js').filters
+const utils             = require('./../app/lib/utils.js')
 
 // Settings
 let simpleGcseGrades    = true //output pass/fail rather than full detail
@@ -39,10 +40,6 @@ const sortBySubmittedDate = (x, y) => {
 // Random whole number
 const getRandomInt = (max) => {
   return Math.floor(Math.random() * Math.floor(max))
-}
-// Random number between x and y
-const getRandomArbitrary = (min, max) => {
-  return Math.floor(Math.random() * (max - min) + min)
 }
 
 // Training routes
@@ -206,7 +203,7 @@ const generateFakeApplications = () => {
     // Approximate size of provider
     // TODO: store provider size somewhere so it can be used here and
     // by the course generator
-    let providerSize = getRandomArbitrary(50, 100)
+    let providerSize = utils.getRandomArbitrary(50, 100)
     let yearsToGenerate = defaultYearsToGenerate
     if (provider?.name == "Webury Hill SCITT") providerSize = 130
     if (provider?.name == "King’s Oak University") {
@@ -216,7 +213,7 @@ const generateFakeApplications = () => {
 
     yearsToGenerate.forEach((year) => {
       // Years can be ±10% in size
-      let traineeCount = getRandomArbitrary((providerSize * 0.9), (providerSize * 1.1))
+      let traineeCount = utils.getRandomArbitrary((providerSize * 0.9), (providerSize * 1.1))
       if (year > currentYear){
         traineeCount = traineeCount * 0.3 // generate fewer future trainees
       }
