@@ -1,0 +1,32 @@
+
+{% extends "_templates/_page.html" %}
+{% set backLink = '/home' %}
+
+{% set pageHeading = 'Reports' %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds-from-desktop">
+    <h1 class="govuk-heading-l">{{pageHeading}}</h1>
+
+    <ul class="govuk-list govuk-list--spaced">
+      <li>
+        <a class="govuk-link" href="/reports/census">
+          Export census records for the {{data.years.currentAcademicYear}} academic year
+        </a>
+      </li>
+
+      {# HESA export only relevant to HEIs #}
+      {% if activeProvider.accreditingProviderType == "HEI" %}
+        <li>
+          <a class="govuk-link" href="/reports/hesa">
+            Export HESA (Higher Education Statistics Agency) records
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+    
+  </div>
+</div>
+{% endblock %}

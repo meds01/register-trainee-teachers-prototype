@@ -161,6 +161,11 @@
       active: true if navActive == 'courses'
     } if false,
     {
+      text: 'Reports',
+      href: '/reports',
+      active: true if navActive == 'Reports'
+    } if isAuthorised('exportRecords'),
+    {
       text: 'Funding',
       href: '/funding/' + data.years.currentAcademicYearSimple + '/payment-schedule',
       active: true if navActive == 'Funding'
