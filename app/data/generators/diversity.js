@@ -70,6 +70,7 @@ module.exports = () => {
     let disabilityChoices = [
       "Blind",
       "Deaf",
+      "Development condition",
       "Learning difficulty",
       "Long-standing illness",
       "Mental health condition",
