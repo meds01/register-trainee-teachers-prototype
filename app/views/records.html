@@ -51,10 +51,12 @@
 
 {% set filterOptionsHtml %}
 
+  {% include "_includes/filter-panel/trainee-search.njk" %}
+
   {% if data.isAdmin %}
 
     {% set adminOnlyFilters %}
-      {% include "_includes/filter-panel/all-providers.njk" %}
+      {% include "_includes/filter-panel/all-accrediting-providers.njk" %}
     {% endset %}
 
     {{ appAdminFeature({
@@ -180,7 +182,10 @@
     </div>
 
     {# Dummy pagination - not hooked up to data yet #}
-    {% include "_includes/pagination.njk" %}
+    {# Don't show pagination when it's clear there's not many results #}
+    {% if filteredRecords | length > 20 %}
+      {% include "_includes/pagination.njk" %}
+    {% endif %}
 
   {% else %}
     <h2 class="govuk-heading-m">No records found</h2>

@@ -79,6 +79,8 @@ router.all('*', function(req, res, next){
   res.locals.accessLevel = permissions.getAccessLevel(data?.signedInProviders, data)
   res.locals.recordAccessLevel = permissions.recordAccessLevel(data?.record, data)
 
+  res.locals.isSupportUi = res.locals.currentPageUrl.startsWith("/support")
+
   next()
 })
 
@@ -200,7 +202,14 @@ router.get("/guidance/hesa-register-data-mapping/:tabName", function (req, res) 
 // Individual route files
 // =============================================================================
 
+// =============================================================================
+// Support ui
+// =============================================================================
+require('./routes/support-routes')(router)
+
+// =============================================================================
 // Records list
+// =============================================================================
 require('./routes/records-list-routes')(router)
 
 // =============================================================================

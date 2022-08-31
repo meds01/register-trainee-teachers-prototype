@@ -1,0 +1,22 @@
+
+
+{{ govukCheckboxes({
+  classes: "govuk-checkboxes--small js-auto-submit",
+  attributes: {
+    "id": 'filterSupportSchoolTypeCheckboxes'
+  }
+  ,
+  fieldset: {
+    legend: {
+      text: "School type",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  items: [
+    {
+      text: "Lead schools only",
+      checked: checked(query.filterSupportSchoolType, "Lead school")
+    }
+  ]
+} | decorateAttributes(data, "data.filterSupportSchoolType"))}}

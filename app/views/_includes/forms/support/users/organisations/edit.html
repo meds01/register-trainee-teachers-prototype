@@ -1,0 +1,39 @@
+
+{{user | log}}
+
+{{ govukRadios({
+  fieldset: {
+    legend: {
+      text: "User’s role at organisation",
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  hint: {
+    text: ""
+  },
+  items: [
+    {
+      text: "Standard"
+    },
+    {
+      text: "Team admin",
+      hint: {
+        text: "Will be able to manage the organisation"
+      }
+    },
+    {
+      divider: 'or'
+    },
+    {
+      text: "Remove access to " + provider.name,
+      value: "Remove",
+      hint: {
+        text: "The user will keep access to 2 other organisations"
+      }
+    },
+    {
+      text: "Archive this user account",
+      value: "Archive"
+    }
+  ]
+}| decorateAttributes(userOrganisationTemp, "userOrganisationTemp.access"))}}

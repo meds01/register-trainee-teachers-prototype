@@ -1,0 +1,104 @@
+{% extends "_templates/_page.html" %}
+
+{% set pageHeading %}
+  School – {{ school.schoolName }}
+{% endset %}
+
+{# {% set navActive = "school" %} #}
+
+{% set backText = "Back" %}
+{# {% set backLink = '/home' %} #}
+
+{% block content %}
+{{super()}}
+
+{% set isRandomLeadSchool = (school.urn % 6) == 0 %} {# 1/6 chance of being lead school #}
+
+{% set isLeadSchool = school | schoolIsLeadSchool or isRandomLeadSchool %}
+
+
+{% set showMetadata = true %}
+
+{% if isLeadSchool %}
+  {% include "_includes/support/impersonate-provider-cta.njk" %}
+{% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+
+{#       <span class="govuk-caption-xl">{{ school | getSchoolTypeString(true) }}</span> #}
+      <span class="govuk-caption-l">{{"Lead school" if isLeadSchool else "School"}}</span>
+      <h1 class="govuk-heading-xl">
+
+        {{school.schoolName}}
+
+        {% if isLeadSchool %}
+          <span style="display: inline-block;">
+            {{govukTag({
+              text: 'Lead school',
+              classes: 'Lead school' | getStatusClass
+            })}}
+          </span>
+        {% endif %}
+
+      </h1>
+
+
+      <h2 class="govuk-heading-m">General</h2>
+
+      {% include "_includes/summary-cards/support/school.html" %}
+
+      {% if isLeadSchool %}
+      <h2 class="govuk-heading-m">Courses</h2>
+
+      {% set publishLinkHtml -%}
+        <a href="#" class="govuk-link" rel="noreferrer noopener" target="_blank">View this organisation in Publish (opens in a new tab)</a>
+      {% endset %}
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Publish teacher training courses"
+            },
+            value: {
+              html: publishLinkHtml
+            },
+            actions: {
+              items: [
+                {
+                  href: providerUrl + "/courses",
+                  text: "View courses",
+                  _visuallyHiddenText: "courses"
+                }
+              ]
+            } if false
+          },
+          {
+            key: {
+              text: "Publish courses"
+            },
+            value: {
+              text: "7 courses imported"
+            },
+            actions: {
+              items: [
+                {
+                  href: providerUrl + "/courses",
+                  text: "View courses",
+                  _visuallyHiddenText: "courses"
+                }
+              ]
+            }
+          }
+        ]
+      }) }}
+      {% endif %}
+
+      <p class="govuk-body govuk-!-margin-top-8"><a href="./archive-organisation/confirm" class="govuk-link app-destructive-link">Archive this school</a></p>
+
+    </div>
+  </div>
+
+{% endblock %}
+

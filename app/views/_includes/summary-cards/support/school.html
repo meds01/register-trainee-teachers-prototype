@@ -1,0 +1,190 @@
+{% set giasLinkHtml -%}
+  <a href="https://get-information-schools.service.gov.uk/Establishments/Establishment/Details/{{school.urn}}" class="govuk-link" rel="noreferrer noopener" target="_blank">View this school (opens in a new tab)</a>
+{% endset %}
+
+{{ school | log }}
+{{ data | log}}
+
+{% set accountDatesHtml %}
+  <p class="govuk-body">
+    Updated {{ faker.date.recent(100) | govukDate }}
+  </p>
+  <p class="govuk-body">
+    Created {{ faker.date.past(3) | govukDate }}
+  </p>
+{% endset %}
+
+{{ govukSummaryList({
+  rows: [
+    {
+      key: {
+        text: "Name"
+      },
+      value: {
+        text: school.schoolName
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "name"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "School type"
+      },
+      value: {
+        text: school.type
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "organisation type"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "Is a lead school"
+      },
+      value: {
+        text: "Yes" if isLeadSchool else "No"
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "is lead school"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "URN"
+      },
+      value: {
+        text: school.urn
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "urn"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "UKPRN"
+      },
+      value: {
+        text: school.ukprn
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "ukprn"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "Open date"
+      },
+      value: {
+        html: faker.date.past(26) | govukDate
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "team inbox"
+          }
+        ]
+      } if false
+    } if showMetadata,
+    {
+      key: {
+        text: "Close date"
+      },
+      value: {
+        html: "School is still open"
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "team inbox"
+          }
+        ]
+      } if false
+    } if showMetadata,
+    {
+      key: {
+        text: "Get information about schools (GIAS)"
+      },
+      value: {
+        html: giasLinkHtml
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "ukprn"
+          }
+        ]
+      } if false
+    } if school.urn,
+    {
+      key: {
+        text: "Team inbox"
+      },
+      value: {
+        text: "teacher-training@" + school.schoolName | makeFakeSchoolDomain
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "team inbox"
+          }
+        ]
+      }
+    } if false,
+    {
+      key: {
+        text: "Account"
+      },
+      value: {
+        html: accountDatesHtml
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "team inbox"
+          }
+        ]
+      } if false
+    } if showMetadata
+  ]
+}) }}

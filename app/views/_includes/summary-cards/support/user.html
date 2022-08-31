@@ -1,0 +1,84 @@
+
+<h2 class="govuk-heading-m">General</h2>
+
+{% set accountDatesHtml %}
+  <p class="govuk-body">
+    Updated {{ faker.date.recent(100) | govukDate }}
+  </p>
+  <p class="govuk-body">
+    Created {{ faker.date.past(3) | govukDate }}
+  </p>
+{% endset %}
+
+{{ govukSummaryList({
+  rows: [
+    {
+      key: {
+        text: "Name"
+      },
+      value: {
+        text: user.fullName
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "name"
+          }
+        ]
+      } if false
+    },
+    {
+      key: {
+        text: "Email address"
+      },
+      value: {
+        text: user.email
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "email"
+          }
+        ]
+      } if false
+    },
+    {
+      key: {
+        text: "DfE Sign-in UID"
+      },
+      value: {
+        text: faker.datatype.uuid()
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "email"
+          }
+        ]
+      }
+    } if showMetadata,
+    {
+      key: {
+        text: "Account"
+      },
+      value: {
+        html: accountDatesHtml
+      },
+      actions: {
+        items: [
+          {
+            href: "./" + uuid + "/edit",
+            text: "Change",
+            visuallyHiddenText: "team inbox"
+          }
+        ]
+      } if false
+    } if showMetadata
+  ]
+}) }}

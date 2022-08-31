@@ -2053,7 +2053,7 @@ exports.getProviderType = function(provider, data=false){
 }
 
 // Get a human readable provider type eg `lead school`,
-exports.getProviderTypeString = (input) => {
+exports.getProviderTypeString = (input, includeAccreditingProviderDetail=false) => {
 
   let type
   if (_.isObject(input)){
@@ -2067,15 +2067,22 @@ exports.getProviderTypeString = (input) => {
       //   return input.accreditingProviderType
       // }
       // else
-        return 'accrediting provider'
+        if (includeAccreditingProviderDetail){
+          return input.accreditingProviderType
+        }
+        else return 'Accrediting provider'
       break;
     case 'leadSchool':
-      return 'lead school'
+      return 'Lead school'
       break;
     default:
       return type
   }
 
+}
+
+exports.lookUpProviderById= (providers, uuid) => {
+  return providers.find(provider => provider.id == uuid)
 }
 
 exports.providerIsAccrediting = function(provider, data=false){
@@ -2088,7 +2095,14 @@ exports.providerIsLeadSchool = function(provider, data=false){
   return exports.getProviderType.apply(this, [provider, data]) == 'leadSchool'
 }
 
+// Used to take a school from GIAS and see if it’s in our lead school list
+exports.schoolIsLeadSchool = function(school, data=false){
+  data = data || this?.ctx?.data || false
 
+  let leadSchools = data.providers.leadSchools.all
+
+  return leadSchools.some(leadSchool => leadSchool.urn == school.urn )
+}
 
 
 // -------------------------------------------------------------------

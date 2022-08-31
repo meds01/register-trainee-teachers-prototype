@@ -1,6 +1,6 @@
 
 .status-card {
-  background-color: govuk-colour("light-grey");
+  background-color: $govuk-brand-colour;
   padding: govuk-spacing(2);
   text-decoration: none;
 
@@ -11,7 +11,7 @@
   }
 
   &:link {
-    color: $govuk-text-colour;
+    color: govuk-colour("white");
   }
 
   &:focus, &:link:focus, &:visited:focus {
@@ -22,7 +22,7 @@
 }
 
 .status-card, .status-card:visited {
-  color: inherit;
+  color: white;
 }
 
 // Colours sourced from here: https://github.com/alphagov/govuk-frontend/blob/61aabca3d440edee6bdecdd20ea54a241c7bbdd5/src/govuk/components/tag/_index.scss#L42
