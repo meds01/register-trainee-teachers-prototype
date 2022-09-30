@@ -3,7 +3,7 @@
 {% set traineesPageHeading = "Registered trainees" %}
 
 {% set pageHeading %}
-  {{ traineesPageHeading }} ({{filteredRecords | length}} {{ "record" | pluralise(filteredRecords | length) }})
+  {{ traineesPageHeading }} ({{filteredRecordsRealCount}} {{ "record" | pluralise(filteredRecordsRealCount) }})
 {% endset %}
 
 {% set backText = "Home" %}
@@ -47,6 +47,43 @@
       }
     ]
     }) }}
+{% endset %}
+
+{% set trainingYearsTabsHtml %}
+
+  {% set academicYearRecentlyChanged = data.years.academicYearStartDate | isInLast(3, 'months') %}
+
+  {% set academicYearChangeUpcoming = data.years.academicYearStartDate | isInNext(1, 'months') %}
+  {# Compile tabs  #}
+  {% set tabItems = [
+    {
+      text: data.years.currentAcademicYear + " (current)",
+      href: "/records/" + "current-year",
+      active: (activeTab == "current-year" or not activeTab)
+    },
+    {
+      text: data.years.nextAcademicYear + " (upcoming)",
+      href: "/records/" + "next-year",
+      active: (activeTab == "next-year")
+    } if academicYearChangeUpcoming,
+    {
+      text: data.years.previousAcademicYear + " (last year)",
+      href: "/records/" + "previous-year",
+      active: (activeTab == "previous-year")
+    } if academicYearRecentlyChanged,
+    {
+      text: "All years",
+      href: "/records/" + "all-years",
+      active: (activeTab == "all-years")
+    }
+  ] %}
+
+  {{ appSubNavigation({
+    label: 'Sub navigation',
+    classes: 'govuk-!-margin-bottom-7',
+    items: tabItems
+  }) }}
+
 {% endset %}
 
 {% set filterOptionsHtml %}
@@ -102,7 +139,11 @@
     <div class="app-records-actions">
       <div class="app-records-actions__col">
         {% if isAuthorised('exportRecords') %}
-          <p class="govuk-body govuk-!-margin-bottom-3"><a href="#" class="govuk-link">Export these records</a></p>
+          {% if hasFilters or activeTab == 'current-year' %}
+            <p class="govuk-body govuk-!-margin-bottom-3"><a href="#" class="govuk-link">Export these records</a></p>
+          {% else %}
+            <p class="govuk-body govuk-!-margin-bottom-3"><a href="/reports/choose-trainee-records" class="govuk-link">Choose trainee records to export</a></p>
+          {% endif %}
         {% endif %}
 
         {# Only sort if there’s at least two items #}
@@ -213,7 +254,11 @@
 
   <div class="govuk-grid-column-full">
 
-    <span class="govuk-caption-l">{{ data.signedInProviders | andSeparate }}</span>
+    {% if data.settings.trainingYearsUiStyle == "Tabs" %}
+      {{ trainingYearsTabsHtml | safe }}
+    {% endif %}
+
+    {# <span class="govuk-caption-l">{{ data.signedInProviders | andSeparate }}</span> #}
     {# This heading set separately than {{pageHeading}} as it uses html #}
     {% include "_includes/trainee-count.njk" %}
 
@@ -260,12 +305,14 @@
 
   <div class="govuk-grid-column-full">
 
+    {# Main page content - filters and trainees #}
     {{ appFilterPage({
       filterOptions: filterOptionsHtml,
       selectedFilters: selectedFilters,
       filterContent: filterContentHtml
       })
     }}
+
   </div>
 
 </div>

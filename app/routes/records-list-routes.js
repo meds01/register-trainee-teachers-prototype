@@ -46,6 +46,7 @@ const getFilters = req => {
   'filterStudyMode',
   'filterTrainingRoutes',
   'filterTrainingStatus',
+  'filterTrainingYears',
   'filterUserProviders']
   filtersToClean.forEach(filter => query[filter] = cleanInputData(query[filter]))
 
@@ -66,6 +67,7 @@ const getFilters = req => {
     allProviders: query.filterAllProviders,
     trainingRoutes: query.filterTrainingRoutes,
     trainingStatus: query.filterTrainingStatus,
+    trainingYears: query.filterTrainingYears,
     subject: query.filterSubject
   }
 
@@ -98,6 +100,7 @@ const getHasFilters = (filters, searchQuery) => {
   || !!(filters.endYears && filters.endYears != 'All years')
   || !!(filters.trainingRoutes)
   || !!(filters.trainingStatus)
+  || !!(filters.trainingYears && filters.trainingYears != 'All years')
   || !!(filters.providers)
   || !!(filters.allProviders && filters.allProviders != 'All providers')
 }
@@ -176,14 +179,17 @@ const getSelectedFilters = req => {
     delete newQuery.filterYears
     let headingText = "Year"
     // Show conditional heading depending on if it’s a start or end year
-    if (filters.years[0].startsWith("End year")){
+    if (filters.years[0].toLowerCase().includes("end")){
       headingText = "End year"
     }
-    else if (filters.years[0].startsWith("Start year")){
+    else if (filters.years[0].toLowerCase().includes("start")){
       headingText = "Start year"
     }
+    else if (filters.years[0].toLowerCase().includes("training")){
+      headingText = "Training year"
+    }
 
-    let tagLabelText = filters.years[0].replace("End year: ", "").replace("Start year: ", "")
+    let tagLabelText = filters.years[0].replace("End year: ", "").replace("Start year: ", "").replace("Training year: ", "")
     selectedFilters.categories.push({
       heading: { text: headingText },
       items: [{
@@ -220,6 +226,22 @@ const getSelectedFilters = req => {
       heading: { text: "End year" },
       items: [{
         text: filters.endYears,
+        href: url.format({
+          pathname,
+          query: newQuery,
+        })
+      }]
+    })
+  }
+
+  // Training years
+  if (filters.trainingYears && filters.trainingYears != 'All years') {
+    let newQuery = Object.assign({}, query)
+    delete newQuery.filterTrainingYears
+    selectedFilters.categories.push({
+      heading: { text: "Training year" },
+      items: [{
+        text: filters.trainingYears,
         href: url.format({
           pathname,
           query: newQuery,
@@ -417,7 +439,19 @@ const getSelectedFilters = req => {
 
 module.exports = router => {
 
-  router.get(['/records'], function (req, res) {
+  router.get("/records", function (req, res, next) {
+    const data = req.session.data
+
+    if (data.settings.trainingYearsUiStyle == 'Tabs'){
+      res.redirect("/records/current-year")
+    }
+    else {
+      next()
+    }
+
+  })
+
+  router.get(['/records', '/records/:tabName'], function (req, res) {
     const data = req.session.data
 
     // We’re not in a record, so make sure to flush record data
@@ -432,7 +466,7 @@ module.exports = router => {
 
     // by default set search results to show "Current" trainees
     // if (!hasQueryString) filters.cohortFilter = ["Current"]
-    if (!hasQueryString) filters.trainingStatus = ["In training"]
+    // if (!hasQueryString) filters.trainingStatus = ["In training"]
 
     let searchQuery = getSearchQuery(req)
 
@@ -443,6 +477,35 @@ module.exports = router => {
 
     // Filter records using the filters provided
     let filteredRecords = utils.filterRecords(data.records, data, filters)
+
+    let tabName = req?.params?.tabName
+    if (tabName){
+      let currentYear = data.years.currentAcademicYear
+      let tabFilters = {}
+      if (tabName == "current-year"){
+        console.log("Showing current year")
+        tabFilters.trainingYears = [currentYear]
+        filteredRecords = utils.filterRecords(filteredRecords, data, tabFilters)
+      }
+      else if (tabName == "previous-year"){
+        console.log("Showing current year")
+        let previousYear = utils.yearToAcademicYearString(utils.academicYearToYear(currentYear) - 1)
+        tabFilters.trainingYears = [previousYear]
+        filteredRecords = utils.filterRecords(filteredRecords, data, tabFilters)
+      }
+      else if (tabName == "next-year"){
+        console.log("Showing next year")
+        let nextYear = utils.yearToAcademicYearString(utils.academicYearToYear(currentYear) + 1)
+        tabFilters.trainingYears = [nextYear]
+        filteredRecords = utils.filterRecords(filteredRecords, data, tabFilters)
+      }
+      else if (tabName == "all-years"){
+        console.log("Showing all years")
+      }
+      else {
+        console.log(`Error: tab name ${tabName} not recognised`)
+      }
+    }
     // console.log(req.query)
     // if (!hasFilters) filteredRecords = filteredRecords.filter(record => record.academicYear == "2021 to 2022")
 
@@ -459,14 +522,24 @@ module.exports = router => {
     let draftRecordsCount = hasFilters ? draftRecords.length : null
 
     // Truncate records in case there's lots - and as we don't have working pagination
+    let filteredRecordsRealCount = registeredRecords.length
+    console.log({filteredRecordsRealCount})
     filteredRecords = registeredRecords.slice(0, 204)
 
-    res.render('records', {
-      filteredRecords,
-      hasFilters,
-      selectedFilters,
-      draftRecordsCount
-    })
+    if (req?.params?.tabName && data.settings.trainingYearsUiStyle != 'Tabs'){
+      res.redirect("/records")
+    }
+    else {
+      res.render('records', {
+        filteredRecords,
+        filteredRecordsRealCount,
+        hasFilters,
+        selectedFilters,
+        draftRecordsCount,
+        activeTab: req.params.tabName
+      })
+    }
+
   })
 
   router.get(['/drafts'], function (req, res) {
@@ -504,11 +577,11 @@ module.exports = router => {
       filteredRecords: draftRecords,
       hasFilters,
       selectedFilters,
-      registeredRecordsCount,
+      registeredRecordsCount
     })
   })
 
-    router.get(['/support/trainees'], function (req, res) {
+  router.get(['/support/trainees'], function (req, res) {
     const data = req.session.data
 
     // We’re not in a record, so make sure to flush record data
@@ -550,10 +623,12 @@ module.exports = router => {
     // let draftRecordsCount = hasFilters ? draftRecords.length : null
 
     // Truncate records in case there's lots - and as we don't have working pagination
+    let filteredRecordsRealCount = filteredRecords.length()
     filteredRecords = filteredRecords.slice(0, 204)
 
     res.render('support/trainees/index.html', {
       filteredRecords,
+      filteredRecordsRealCount,
       hasFilters,
       navActive: 'trainees'
       // selectedFilters

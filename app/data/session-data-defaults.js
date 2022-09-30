@@ -141,6 +141,10 @@ settings.includeDeclaration = false
 
 settings.bulkLinksInPrimaryNav = "None"
 
+settings.trainingYearsUiStyle = "Checkboxes"
+
+settings.traineeExportQuestionStyle = "Two stage"
+
 settings.skipCourseDatesPage = 'true'
 
 settings.showFundingInPrimaryNav = 'true'

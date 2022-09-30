@@ -209,6 +209,55 @@ exports.setEndAcademicYear = record => {
   return record
 }
 
+// Saves training years on to a trainee
+exports.setTrainingYears = record => {
+
+  let trainingYears = exports.calculateTrainingYears(record)
+
+  if (trainingYears){
+    record.trainingYears = trainingYears
+  }
+
+  return record
+}
+
+// Calculates training years for a trainee
+// Training years are all the years that the trainee was in training for
+// A trainee that started in 2019 to 2020 and is still in training in 2022 to 2023 
+// will have training years of: ['2019 to 2020','2020 to 2021', '2021 to 2022', '2022 to 2023']
+
+// For finished trainees, it'll be all the years between start year and end year. For trainees
+// still in training, it'll be the years from start year to the current yera
+exports.calculateTrainingYears = record => {
+
+  let currentYear = exports.academicYearToYear(years.currentAcademicYear)
+
+  // Lower bound year
+  let lowerBoundYear = exports.academicYearToYear(record.academicYear)
+
+  // Max upper bound year
+  let upperBoundYear = currentYear
+
+
+  // If the trainee has finished, then their upper bound is their end year
+  if (!exports.isActiveStatus(record)){
+    let endYear = exports.academicYearToYear(record.endAcademicYear)
+
+    // It shouldn't be possible to have a finished trainee with an end year in the future. But
+    // just in case, use the lower of curren tyera or end year.
+    upperBoundYear = Math.min(currentYear, endYear)
+  }
+
+  let allYears = []
+
+  // Interpolate all years between upper and lower bound
+  for (let year = lowerBoundYear; year <= upperBoundYear; year++){
+    allYears.push(exports.yearToAcademicYearString(year)) // 2022 to 2023
+  }
+
+  return allYears
+}
+
 
 // Check if the course has allocated places
 exports.hasAllocatedPlaces = (record) => {
@@ -1164,7 +1213,7 @@ exports.calculateCourseEndAcademicYear = record => {
 // End academic year depends on the trainee status and what data
 // we have available
 exports.calculateEndAcademicYear = record => {
-  
+  console.log("Calculating end academic year")
   if (exports.isAwarded(record)){
     return exports.dateToAcademicYear(record?.qualificationAwardedDate)
   }
@@ -1181,7 +1230,6 @@ exports.calculateEndAcademicYear = record => {
     return exports.calculateCourseEndAcademicYear(record)
   }
   else return false
-
 }
 
 // Check if record is finishing this year
@@ -1608,19 +1656,119 @@ exports.filterRecords = (records, data, filters = {}) => {
     })
   }
 
-  // Combined start and end years - not currently used
-  // if (filters.years && filters.years != "All years"){
-  //   filteredRecords = filteredRecords.filter(record => filters.years.includes(record.academicYear))
-  // }
+  // All types of years combined in to one select.
+  if (filters.years && filters.years != "All years"){
+    filteredRecords = filteredRecords.filter(record => {
+
+      // Support for years being an array.
+      return filters.years.some(year => {
+
+        // Value might be something like `End year: 2022 to 2023` or `Start year: 2019 to 2020 and prior`
+        let yearCleaned = year.replace("End year: ", "").replace("Start year: ", "").replace("Training year: ", "").replace(" and prior", "")
+        let yearShort = exports.academicYearToYear(yearCleaned)
+
+        // Start year
+        if (year.toLowerCase().includes("start")) {
+          if (year.includes("prior")){
+            startYearShort = exports.academicYearToYear(record.academicYear)
+            return (startYearShort <= yearShort)
+          }
+          else return year.includes(record.academicYear)
+        }
+
+        // End year
+        else if (year.toLowerCase().includes("end")) {
+          if (year.includes("prior")){
+            endYearShort = exports.academicYearToYear(record.endAcademicYear)
+            return (endYearShort <= yearShort)
+          }
+          else return year.includes(record.endAcademicYear)
+        }
+
+        // Training year
+        else if (year.toLowerCase().includes("training")) {
+          // Make sure training years is always an array
+          let trainingYears = [].concat(record.trainingYears || [])
+
+          // Trainees can have multiple training years. Match on any.
+          return trainingYears.some(trainingYear => {
+
+            // eg 'Training year: 2020 to 2021 and prior'
+            // Should match all training years 2020 to 2021 and prior
+            if (year.includes("prior")){
+              let trainingYearShort = exports.academicYearToYear(trainingYear)
+              return (trainingYearShort <= yearShort)
+            }
+            else return year.includes(trainingYear)
+          })
+        }
+
+        // Something has gone wrong
+        return false
+      })
+
+    })
+  }
 
   if (filters.startYears && filters.startYears != "All years"){
-    filteredRecords = filteredRecords.filter(record => filters.startYears.includes(record.academicYear))
+    filteredRecords = filteredRecords.filter(record => {
+
+      return filters.startYears.some(year => {
+
+        let yearCleaned = year.replace(" and prior", "")
+        let yearShort = exports.academicYearToYear(yearCleaned)
+
+        if (year.includes("prior")){
+          startYearShort = exports.academicYearToYear(record.academicYear)
+          return (startYearShort <= yearShort)
+        }
+        else return year.includes(record.academicYear)
+      })
+    })
   }
 
   if (filters.endYears && filters.endYears != "All years"){
-    console.log(filters.endYears)
-    filteredRecords = filteredRecords.filter(record => filters.endYears.includes(record.endAcademicYear))
+    filteredRecords = filteredRecords.filter(record => {
+      return filters.endYears.some(year => {
+
+        let yearCleaned = year.replace(" and prior", "")
+        let yearShort = exports.academicYearToYear(yearCleaned)
+
+        if (year.includes("prior")){
+          endYearShort = exports.academicYearToYear(record.endAcademicYear)
+          return (endYearShort <= yearShort)
+        }
+        else return year.includes(record.endAcademicYear)
+      })
+    })
   }
+
+  if (filters.trainingYears && filters.trainingYears != "All years"){
+    filteredRecords = filteredRecords.filter(record => {
+
+      // Make sure training years is always an array
+      let trainingYears = [].concat(record.trainingYears || [])
+
+      return filters.trainingYears.some(year => {
+
+        let yearCleaned = year.replace(" and prior", "")
+        let yearShort = exports.academicYearToYear(yearCleaned)
+
+        return trainingYears.some(trainingYear => {
+
+          // eg 'Training year: 2020 to 2021 and prior'
+          // Should match all training years 2020 to 2021 and prior
+          if (year.includes("prior")){
+            let trainingYearShort = exports.academicYearToYear(trainingYear)
+            return (trainingYearShort <= yearShort)
+          }
+          else return year.includes(trainingYear)
+        })
+      })
+
+    })
+  }
+
 
   if (filters.cohortFilter){
     filteredRecords = filteredRecords.filter(record => filters.cohortFilter.includes(exports.getCohortFilter(record)))
