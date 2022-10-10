@@ -1,0 +1,12 @@
+{% extends "_templates/_record-form.html" %}
+
+{% set pageHeading = "Which country or territory is the trainee studying in?" %}
+
+{% set formAction = "./confirm" | addReferrer(referrer) %}
+
+{% block formContent %}
+
+  {% include "_includes/forms/iqts/country.html" %}
+
+{% endblock %}
+

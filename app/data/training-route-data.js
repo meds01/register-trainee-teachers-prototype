@@ -572,6 +572,7 @@ let baseRouteData = {
       'contactDetails',
       'diversity',
       'degree',
+      'iqts'
       // 'schools',
       // 'placement'
       // 'funding'
