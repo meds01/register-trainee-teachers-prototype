@@ -1,36 +1,63 @@
+{% set otherDisabilityHtml %}
+  {{ govukInput({
+    classes: "govuk-!-width-two-thirds",
+    label: {
+      text: "Describe their disability or health condition (optional)"
+    }
+  } | decorateAttributes(record, "record.diversity.disabilitiesOther"))}}
+{% endset -%}
+
 {% include "_includes/trainee-name-caption.njk" %}
 
-{{ govukRadios({
-  idPrefix: "disabilities",
-  name: "record[diversity][disabledAnswer]",
-  fieldset: {
-    legend: {
-      text: pageHeading,
-      isPageHeading: true,
-      classes: "govuk-fieldset__legend--l"
-    }
-  },
-  hint: {
-    text: ""
-  },
-  items: [
-    {
-      value: "They shared that they’re disabled",
-      text: "Yes, they shared that they’re disabled"
+{% set disabilityItems = [] %}
+
+{% for disabilityItem in data.disabilities.items %}
+  {% set disabilityItems = disabilityItems | push(disabilityItem) %}
+{% endfor %}
+
+{% set disabilityItems = disabilityItems | push({
+  text: data.disabilities.otherOption.text,
+  value: data.disabilities.otherOption.value,
+  conditional: {
+    html: otherDisabilityHtml
+  }
+}) %}
+
+{% set disabilityItems = disabilityItems | push({
+  divider: "or"
+}) %}
+
+{% set disabilityItems = disabilityItems | push(data.disabilities.noneOption) %}
+
+{% set disabilityItems = disabilityItems | push({
+  divider: "or"
+}) %}
+
+{% set disabilityItems = disabilityItems | push(data.disabilities.notProvidedOption) %}
+
+<h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+<p class="govuk-body">
+  You should only enter this information if you have collected it from the trainee to monitor equality and diversity of your teacher trainees. It’s optional for trainees to tell you about this.
+</p>
+
+<p class="govuk-body">
+  You should not enter this information if a trainee has chosen not to provide it.
+</p>
+
+{{ govukCheckboxes({
+    fieldset: {
+      legend: {
+        text: "Which disabilities or health conditions did the trainee share for equality and diversity purposes?",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
+      }
     },
-    {
-      value: "They shared that they’re not disabled",
-      text: "They shared that they’re not disabled"
+    hint: {
+      text: "Select all that apply"
     },
-    {
-      divider: "or"
-    },
-    {
-      value: "Not provided",
-      text: "They did not say"
-    }
-  ]
-} | decorateAttributes(record, "record.diversity.disabledAnswer"))}}
+    items: disabilityItems
+  } | decorateAttributes(record, "record.diversity.disabilities")) }}
 
 {{ govukButton({
   text: "Continue"

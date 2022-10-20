@@ -1,6 +1,8 @@
 {% extends "_templates/_record-form.html" %}
 
-{% set pageHeading = "Has the trainee shared that they are disabled?" %}
+{% set pageHeading = "Disabilities and health conditions" %}
+
+{% set formAction = "./confirm" | addReferrer(referrer) %}
 
 {% block formContent %}
   {% include "_includes/forms/diversity/disabilities.html" %}
