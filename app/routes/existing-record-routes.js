@@ -263,8 +263,6 @@ module.exports = router => {
     }
   })
 
-
-
   // Get timeline items and pass to view
   router.get('/record/:uuid/timeline', (req, res) => {
     const data = req.session.data
