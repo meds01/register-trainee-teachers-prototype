@@ -143,6 +143,9 @@ settings.includeDeclaration = false
 
 settings.bulkLinksInPrimaryNav = "None"
 
+// Flow that combines withdrawing and removing in one
+settings.useCombinedRemoveFlow = "false"
+
 settings.academicYearsUiStyle = "Checkboxes"
 
 settings.traineeExportQuestionStyle = "Two stage"

@@ -8,14 +8,33 @@
 
 
 {% set withdrawalReason %}
-  {% if record.withdraw.reason == "For another reason" %}
-    {{record.withdraw.reasonOther}}
-  {% else%}
-    {{record.withdraw.reason}}
+  {% if record.withdraw.reasons | length > 1 %}
+    <ul class="govuk-list">
+      {% for reason in record.withdraw.reasons | sort %}
+        <li>{{reason}}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    {{ record.withdraw.reasons }}
+  {% endif %}
+{% endset %}
+
+{% set suggestedSupportLabel %}
+  {% if record.withdraw.suggestedSupportBoolean == "Yes" %}
+    What the Department for Education could have done
+  {% else %}
+    Could the Department for Education have done anything to avoid the candidate withdrawing?
   {% endif %}
 {% endset %}
 
 
+{% set suggestedSupportValue %}
+  {% if record.withdraw.suggestedSupportBoolean == "Yes" %}
+    {{ record.withdraw.suggestedSupport | nl2br | safe or "Not provided" }}
+  {% else %}
+      No
+  {% endif %}
+{% endset %}
 
 {% set withdrawDetailsRows = [
   {
@@ -37,7 +56,7 @@
   } if record.withdraw.showStartDate,
   {
     key: {
-      text: "Date of withdrawal"
+      text: "Date the trainee withdrew"
     },
     value: {
       text: withdrawalDate
@@ -54,17 +73,51 @@
   },
   {
     key: {
-      text: "Reason for withdrawal"
+      text: "Why the trainee withdrew"
     },
     value: {
-      text: withdrawalReason or 'Not provided'
+      text: withdrawalReason | safe or 'Not provided'
     },
     actions: {
       items: [
         {
-          href: recordPath + "/withdraw" | addReferrer(referrer),
+          href: recordPath + "/withdraw/details" | addReferrer(referrer),
           text: "Change",
           visuallyHiddenText: "withdrawal reason"
+        }
+      ]
+    } if canAmend
+  },
+  {
+    key: {
+      text: "Details about why the trainee withdrew"
+    },
+    value: {
+      text: record.withdraw.additionalDetail | nl2br | safe | falsify or "Not provided"
+    },
+    actions: {
+      items: [
+        {
+          href: recordPath + "/withdraw/additional-details" | addReferrer(referrer),
+          text: "Change",
+          visuallyHiddenText: "additional details"
+        }
+      ]
+    } if canAmend
+  },
+  {
+    key: {
+      text: suggestedSupportLabel
+    },
+    value: {
+      html: suggestedSupportValue
+    },
+    actions: {
+      items: [
+        {
+          href: recordPath + "/withdraw/additional-details" | addReferrer(referrer),
+          text: "Change",
+          visuallyHiddenText: "additional details"
         }
       ]
     } if canAmend
@@ -82,4 +135,3 @@
   titleText: "Withdrawal details",
   html: withdrawDetailsHtml
 }) }}
-

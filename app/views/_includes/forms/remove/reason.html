@@ -1,0 +1,49 @@
+
+{% include "_includes/trainee-name-caption.njk" %}
+
+{{ govukRadios({
+  fieldset: {
+    legend: {
+      isPageHeading: true,
+      text: pageHeading,
+      classes: "govuk-fieldset__legend--l"
+    }
+  },
+  items: [
+    {
+      text: "Already has " + record | getQualificationText,
+      value: "already-has-teaching-status"
+    },
+    {
+      text: "Did not start the course",
+      value: "did-not-start",
+      _hint: {
+        text: "Not available because the trainee has started"
+      } if record | traineeStarted,
+      _attributes: {
+        disabled: true
+      } if record | traineeStarted
+    } if not record | traineeStarted,
+    {
+      text: "Record added in error",
+      value: "added-in-error"
+    },
+    {
+      text: "Transferring to a different provider"
+    },
+    {
+      text: "Withdrawing from course",
+      value: "withdraw",
+      _hint: {
+        text: "Not available because the course has not yet started"
+      } if record | ittInTheFuture,
+      _attributes: {
+        disabled: true
+      } if record | ittInTheFuture
+    } if not record | ittInTheFuture
+  ]
+} | decorateAttributes(record, "record.remove.reason")) }}
+
+{{ govukButton({
+  text: "Continue"
+}) }}
