@@ -11,7 +11,7 @@
 
 {% set previousAcademicYear = data.years.previousAcademicYear %}
 
-{% set pageHeading = 'Export trainee data for the ' + previousAcademicYear + ' academic year for performance profiles sign off' %}
+{% set pageHeading = 'Trainee data for the ' + previousAcademicYear + ' academic year for performance profiles sign off' %}
 
 {% set performanceProfilesDate = "2023-1-31" %}
 
@@ -25,7 +25,7 @@
 
 
 {% set hasZeroTraineesToExport = true if traineeCount == 0 %}
-  
+
 {% block content %}
 {{super()}}
 
@@ -35,27 +35,48 @@
 
       <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
-      <p class="govuk-body">
-        This export will include all trainees from the {{ previousAcademicYear }} academic year
-      </p>
+      <p class="govuk-body">This export includes all trainees who:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          have been registered
+        </li>
+        <li>
+          were in the {{ previousAcademicYear }} academic year or do not have a start date
+        </li>
+      </ul>
 
     {% set insetTextHtml %}
-      For the {{ previousAcademicYear }} academic year, the deadline for signing off your itt performance profiles data is <span class="app-nowrap">{{ performanceProfilesDate | govukDate('dddd D MMMM YYYY') }}</span>.
+      You must sign off this data by 4pm on <span class="app-nowrap">{{ performanceProfilesDate | govukDate('dddd D MMMM YYYY') }}</span>.
     {% endset %}
 
     {{ govukInsetText({
       html: insetTextHtml
     }) }}
 
-      <h2 class="govuk-heading-m">What you must do to sign off your {{ previousAcademicYear }} trainee data</h2>
+      <h2 class="govuk-heading-m">Check your trainee data</h2>
 
-      <p class="govuk-body">Use this export to check .... You should check for any errors or missing trainees.</p>
+      <p class="govuk-body">Check that all your 2020 to 2021 trainees are listed and that each trainee is only listed once.</p>
 
-      <p class="govuk-body">Once you’ve checked your data, a senior person from your organisation (preferably a different person to who submitted the data) should sign it off <a href="#" class="govuk-link">using this form (opens in a new tab)</a>.</p>
+      <p class="govuk-body">For each trainee you should check:</p>
 
-      <p class="govuk-body">You must sign off your data on or before {{ performanceProfilesDate | govukDate('dddd D MMMM YYYY') }}. Not submitting and signing off trainee data by this date will mean that we (the DfE) do not have accurate data on your trainees and they may be excluded from the ITT performance profiles publication.</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          course details
+        </li>
+        <li>
+          status
+        </li>
+        <li>
+          the date they were awarded QTS, deferred or withdrew from the course
+        </li>
+      </ul>
 
-      <h2 class="govuk-heading-m">What to do if you find a mistake</h2>
+      <p class="govuk-body">Check that the number of trainees with QTS or EYTS awarded is accurate.</p>
+
+      <h2 class="govuk-heading-m">Fix mistakes</h2>
+
+      <p class="govuk-body">How you fix a mistake depends on whether you registered the trainee using HESA.</p>
 
       <h3 class="govuk-heading-s">Non-HESA trainees</h3>
 
@@ -65,36 +86,23 @@
 
       <p class="govuk-body">TBD how to fix hesa trainees?</p>
 
-      <h2 class="govuk-heading-m">How trainee data relates to the ITT performance profiles publication</h2>
+      <h2 class="govuk-heading-m">Sign off your trainee data</h2>
 
-      <p class="govuk-body">Not all your trainees in this export will be included in the ITT performance profiles publication. To understand what data will be used, read the <a href="https://explore-education-statistics.service.gov.uk/methodology/initial-teacher-training-performance-profiles-methodology" class="govuk-link">Initial Teacher Training performance profiles methodology (opens in a new tab)</a>.</p>
+      <p class="govuk-body">Once you’ve checked your data, a senior person from your organisation should sign it off <a href="#" class="govuk-link">using this form (opens in a new tab)</a>.</p>
+
+      <p class="govuk-body">You must sign off your data on or before {{ performanceProfilesDate | govukDate('dddd D MMMM YYYY') }}.</p>
+
+      <p class="govuk-body">If you do not do this then your trainees may be excluded from the ITT performance profiles publication.</p>
+
+      <h2 class="govuk-heading-m">How trainee data is used in the ITT performance profiles publication</h2>
+
+      <p class="govuk-body">Some trainees listed in the export will not be included in the ITT performance profiles publication.</p>
+
+      <p class="govuk-body">For example, trainees who withdrew within 90 days of the course start will not be included.</p>
+
+      <p class="govuk-body">To understand what data will be used, read the <a href="https://explore-education-statistics.service.gov.uk/methodology/initial-teacher-training-performance-profiles-methodology" class="govuk-link">Initial Teacher Training performance profiles methodology (opens in a new tab)</a>.</p>
 
       <p class="govuk-body">Performance profiles primarily focuses on trainees who finished in the year. This report will include all trainees from the year so you can make sure that they have been correctly awardded or withdrawn or if they are continuing, that their estimated ITT end date is updated.</p>
-
-      {{ govukInsetText({
-        text: "Trainees who withdrew within 90 days of the course start do not get included as part of the Performance profiles publication"
-      }) }}
-
-
-      <h2 class="govuk-heading-m">About this export</h2>
-
-      <p class="govuk-body">This export includes all trainees:</p>
-
-      <ul class="govuk-list govuk-list--bullet">
-        <li>
-          That were in the {{ previousAcademicYear }} academic year
-        </li>
-        <li>
-          Were not drafts
-        </li>
-        <li>
-          x
-        </li>
-      </ul>
-
-
-
-      <p class="govuk-body">If a trainee does not have a trainee start date, they will also be included in this export.</p> 
 
       <input name="successFlash" type="hidden" value="Export successfully downloaded">
 
@@ -116,5 +124,5 @@
     </form>
   </div>
 </div>
-  
+
 {% endblock %}
