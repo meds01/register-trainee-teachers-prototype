@@ -11,7 +11,7 @@
 
 {% set previousAcademicYear = data.years.previousAcademicYear %}
 
-{% set pageHeading = 'Trainee data for the ' + previousAcademicYear + ' academic year for performance profiles sign off' %}
+{% set pageHeading = 'Trainees who studied in the ' + previousAcademicYear + ' academic year' %}
 
 {% set performanceProfilesDate = "2023-1-31" %}
 
@@ -35,30 +35,38 @@
 
       <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
-      <p class="govuk-body">This export includes all trainees who:</p>
+      <p class="govuk-body">The data in this export will be used for the initial teacher training (ITT) performance profiles publication.</p>
+
+      <p class="govuk-body">You must check it, fix any mistakes and sign it off by 4pm on {{ performanceProfilesDate | govukDate('D MMMM YYYY') }}.</p>
+
+      <p class="govuk-body">The export includes all trainees who:</p>
 
       <ul class="govuk-list govuk-list--bullet">
         <li>
-          have been registered
+          have been registered with the Department for Education
         </li>
         <li>
-          were in the {{ previousAcademicYear }} academic year or do not have a start date
+          either studied in the {{ previousAcademicYear }} academic year or do not have a start date in their trainee record
         </li>
       </ul>
 
-    {% set insetTextHtml %}
-      You must sign off this data by 4pm on <span class="app-nowrap">{{ performanceProfilesDate | govukDate('dddd D MMMM YYYY') }}</span>.
-    {% endset %}
-
-    {{ govukInsetText({
-      html: insetTextHtml
-    }) }}
-
       <h2 class="govuk-heading-m">Check your trainee data</h2>
 
-      <p class="govuk-body">Check that all your 2020 to 2021 trainees are listed and that each trainee is only listed once.</p>
+      <p class="govuk-body">You need to check that:
 
-      <p class="govuk-body">For each trainee you should check:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          all your 2020 to 2021 trainees are listed, including any who deferred or withdrew from the course
+        </li>
+        <li>
+          each trainee is only listed once
+        </li>
+        <li>
+        the number of trainees awarded qualified teacher status (QTS) or early years teacher status (EYT) is accurate
+        </li>
+      </ul>
+
+      <p class="govuk-body">For each trainee you need to check:</p>
 
       <ul class="govuk-list govuk-list--bullet">
         <li>
@@ -68,23 +76,23 @@
           status
         </li>
         <li>
-          the date they were awarded QTS, deferred or withdrew from the course
+          the date they were awarded QTS, deferred or withdrew from the course, unless they are still studying
         </li>
       </ul>
 
-      <p class="govuk-body">Check that the number of trainees with QTS or EYTS awarded is accurate.</p>
-
       <h2 class="govuk-heading-m">Fix mistakes</h2>
 
-      <p class="govuk-body">How you fix a mistake depends on whether you registered the trainee using HESA.</p>
+      <p class="govuk-body">How you fix a mistake depends on whether you registered the trainee using HESA or this service.</p>
 
-      <h3 class="govuk-heading-s">Non-HESA trainees</h3>
-
-      <p class="govuk-body">If the trainee is still active, update the trainee in Register with the correct information. If the trainee has been awarded or withdrawn, you will need to contact us to do the update.</p>
-
-      <h3 class="govuk-heading-s">HESA trainees</h3>
+      <h3 class="govuk-heading-s">Trainees registered using HESA</h3>
 
       <p class="govuk-body">TBD how to fix hesa trainees?</p>
+
+      <h3 class="govuk-heading-s">Trainees registered using this service</h3>
+
+      <p class="govuk-body">If the trainee is still studying or has deferred, you should update the their details with the correct information.</p>
+
+      <p class="govuk-body">If the trainee has been awarded or withdrawn, you should to do the update.</p>
 
       <h2 class="govuk-heading-m">Sign off your trainee data</h2>
 
@@ -94,15 +102,13 @@
 
       <p class="govuk-body">If you do not do this then your trainees may be excluded from the ITT performance profiles publication.</p>
 
-      <h2 class="govuk-heading-m">How trainee data is used in the ITT performance profiles publication</h2>
+      <h2 class="govuk-heading-m">How trainee data will be used in the ITT performance profiles publication</h2>
 
-      <p class="govuk-body">Some trainees listed in the export will not be included in the ITT performance profiles publication.</p>
+      <p class="govuk-body">Some trainees listed in this export will not be included in the ITT performance profiles publication. For example, trainees who withdrew within 90 days of the course start will not be included.</p>
 
-      <p class="govuk-body">For example, trainees who withdrew within 90 days of the course start will not be included.</p>
+      <p class="govuk-body">To find out how the data will be used, read the <a href="https://explore-education-statistics.service.gov.uk/methodology/initial-teacher-training-performance-profiles-methodology" class="govuk-link">Initial Teacher Training performance profiles methodology (opens in a new tab)</a>.</p>
 
-      <p class="govuk-body">To understand what data will be used, read the <a href="https://explore-education-statistics.service.gov.uk/methodology/initial-teacher-training-performance-profiles-methodology" class="govuk-link">Initial Teacher Training performance profiles methodology (opens in a new tab)</a>.</p>
-
-      <p class="govuk-body">Performance profiles primarily focuses on trainees who finished in the year. This report will include all trainees from the year so you can make sure that they have been correctly awardded or withdrawn or if they are continuing, that their estimated ITT end date is updated.</p>
+      <p class="govuk-body">You need to check and sign off all the trainee data in the export.</p>
 
       <input name="successFlash" type="hidden" value="Export successfully downloaded">
 
