@@ -118,8 +118,12 @@
   {# Convert array to array of objects that table macro needs #}
   {% set tableRows = yearCounts | arrayToGovukTable %}
 
+  {% set tableCaption -%}
+    Summary of the {{previousAcademicYear}} academic year
+  {%- endset %}
+
   {{ govukTable({
-    caption: "Summary of the year",
+    caption: tableCaption,
     captionClasses: "govuk-table__caption--m",
     firstCellIsHeader: false,
     head: [
@@ -143,9 +147,7 @@
 
       <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
-      {{ yearSummaryTable | safe }}
-
-      <p class="govuk-body">The data in this export will be used for the initial teacher training (ITT) performance profiles publication.</p>
+      <p class="govuk-body">You can use this report to help you sign off your data for the initial teacher training (ITT) performance profiles publication.</p>
 
       <p class="govuk-body">You must check it, fix any mistakes and sign it off by 4pm on {{ performanceProfilesDate | govukDate('D MMMM YYYY') }}.</p>
 
@@ -156,9 +158,11 @@
           have been registered with the Department for Education
         </li>
         <li>
-          either studied in the {{ previousAcademicYear }} academic year or do not have a start date in their trainee record
+          studied in the {{ previousAcademicYear }} academic year
         </li>
       </ul>
+
+      {{ yearSummaryTable | safe }}
 
       <h2 class="govuk-heading-m">Check your trainee data</h2>
 
@@ -167,9 +171,6 @@
       <ul class="govuk-list govuk-list--bullet">
         <li>
           all your 2020 to 2021 trainees are listed, including any who deferred or withdrew from the course
-        </li>
-        <li>
-          each trainee is only listed once
         </li>
         <li>
         the number of trainees awarded qualified teacher status (QTS) or early years teacher status (EYT) is accurate
@@ -192,7 +193,9 @@
 
       <h2 class="govuk-heading-m">Fix mistakes</h2>
 
-      <p class="govuk-body">How you fix a mistake depends on whether you registered the trainee using HESA or this service.</p>
+      <p class="govuk-body">If the trainee has been awarded or withdrawn, email <a class="govuk-link" href="mailto:becomingateacher@digital.education.gov.uk?subject=Accessibility%20issues%20">becomingateacher@digital.education.gov.uk</a>.</p>
+
+      <p class="govuk-body">If the trainee is still studying or has deferred, how you fix a mistake depends on whether you registered the trainee using HESA or this service.</p>
 
       <h3 class="govuk-heading-s">Trainees registered using HESA</h3>
 
@@ -201,8 +204,6 @@
       <h3 class="govuk-heading-s">Trainees registered using this service</h3>
 
       <p class="govuk-body">If the trainee is still studying or has deferred, you should update the their details with the correct information.</p>
-
-      <p class="govuk-body">If the trainee has been awarded or withdrawn, you should to do the update.</p>
 
       <h2 class="govuk-heading-m">Sign off your trainee data</h2>
 
