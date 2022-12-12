@@ -1,0 +1,93 @@
+{% extends "_templates/_page.html" %}
+
+{% set navActive = 'bulk' %}
+
+{% set pageHeading = "Upload summary" %}
+
+{% set bulkPath =  "recommend" %}
+{% set bulkRoute = "recommend" %}
+
+{% set totalCount = data.bulkUpload.processedRows | length %}
+
+{# Sets numbers for errors summary #}
+{% set errorCount     = data.bulkUpload.processedRows | where("uploadStatus", "error") | length  %}
+{% set unchangedCount = data.bulkUpload.processedRows | where("uploadStatus", "unchanged") | length  %}
+{% set updatedCount   = data.bulkUpload.processedRows | where("uploadStatus", "updated") | length  %}
+
+{% set hasErrors = errorCount > 0 %}
+
+{% set hasUpdated = updatedCount > 0 %}
+
+{% block content %}
+{{super()}}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+
+      <span class="govuk-caption-l">{{ data.signedInProviders | andSeparate }}</span>
+      <h1 class="govuk-heading-l">{{pageHeading}}</h1>
+      {% set errorPluralisation = "error" | pluralise(errorCount) %}
+      <form action="/bulk-update/{{ bulkPath }}/errors-found-answer" method="post" novalidate>
+
+        <p class="govuk-body">You uploaded a CSV file with details of {{ totalCount }} {{ "trainee" | pluralise(totalCount) }}.</p>
+
+        <p class="govuk">
+          It included:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+          {% if updatedCount %}
+            <li>
+              {{ updatedCount }} {{ "trainee" | pluralise(updatedCount) }} who will be recommended for QTS or EYTS
+            </li>
+          {% endif %}
+          {% if unchangedCount %}
+            <li>
+              {{ unchangedCount }} {{ "trainee" | pluralise(unchangedCount) }} who will not be recommended, as you did not give a date when they met the training standard
+            </li>
+          {% endif %}
+          {% if errorCount %}
+            <li>
+              {{ errorCount }} {{ "trainee" | pluralise(errorCount) }} with errors in their details
+            </li>
+          {% endif %}
+
+        </ul>
+        {%  if updatedCount == 0 %}
+          <p class="govuk-body">
+            You need to fix the errors before you can update the trainee records.
+          </p>
+        {% endif %}
+
+        {% if hasErrors %}
+          {{ govukButton({
+            text: "Review errors",
+            href: '/bulk-update/recommend/fix-errors'
+          }) }}
+        {% elseif hasUpdated %}
+          {{ govukButton({
+            text: "Check who you’ll recommend",
+            href: '/bulk-update/recommend/check-pending-updates'
+          }) }}
+        {% else %}
+          {{ govukButton({
+            text: "Return to upload",
+            href: '/bulk-update/recommend/upload'
+          }) }}
+        {% endif %}
+
+        {# {% if hasErrors and hasUpdated %}
+          <p class="govuk-body">
+            <a href="/bulk-update/recommend/check-pending-updates" class="govuk-link">
+              Skip fixing errors and check pending updates to trainee records
+            </a>
+          </p>
+        {% endif %} #}
+
+
+      </form>
+      <p class="govuk-body">
+        <a href="/bulk-update/cancel-bulk-updates" class="govuk-link">Cancel bulk {{ "recommending trainees" if data.settings.bulkLinksInPrimaryNav == "Show bulk recommend" else "updates to records" }}</a>
+      </p>
+    </div>
+  </div>
+
+{% endblock %}

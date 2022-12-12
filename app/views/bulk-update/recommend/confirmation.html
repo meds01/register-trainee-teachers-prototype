@@ -14,7 +14,13 @@
   {% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "updated") %}
 {% endif %}
 
-{% set pageHeading = processedRows | length  + " trainee records recommended for " + traineesThatCanBeRecommended | getQualifications | orSeparate %}
+{# Get an array of the trainees #}
+{% set processedTrainees = processedRows | lodash("map", "trainee") %}
+
+
+{% set pageHeading = processedTrainees | length  + " trainee records recommended for " + processedTrainees | getQualifications | orSeparate %}
+
+{% set incompleteRecords = filteredRecords | filterByIncomplete %}
 
 {% block content %}
 
@@ -26,18 +32,23 @@
       }) }}
 
       <p class="govuk-body">
-        The DfE will award {{ traineesThatCanBeRecommended | getQualifications | orSeparate }} where appropriate within 3 working days.
+        The Department for Education will award {{ traineesThatCanBeRecommended | getQualifications | orSeparate }} within 3 working days.
       </p>
 
       <h2 class="govuk-heading-m">
-        Next steps
+        You can now:
       </h2>
-      <p class="govuk-body">
-        <a href="/records" class="govuk-link">View your current trainees</a>
-      </p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li><a href="/records" class="govuk-link">view all registered trainees</a></li>
+        {% if incompleteRecords | length%}
+          <li><a href="/records?filterCompleteStatus=Incomplete" class="govuk-link">view your incomplete trainees ({{incompleteRecords | length}})</a></li>
+        {% endif %}
+        <li><a href="/records?filterEndYears={{ data.years.currentAcademicYear }}" class="govuk-link">view registered trainees whose course ends in the {{ data.years.currentAcademicYear }} academic year</a></li>
+        <li><a href="/drafts" class="govuk-link">view all draft trainees</a></li>
+      </ul>
+
     </div>
   </div>
 
 {% endblock %}
-
-

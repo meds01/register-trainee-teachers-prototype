@@ -47,6 +47,7 @@ $govuk-assets-path: '/govuk/assets/';
 @import "components/records-actions";
 @import "components/user-card";
 @import "components/sub-navigation";
+@import "components/spreadsheet";
 @import "components/timeline";
 @import "components/status-card";
 
@@ -58,6 +59,7 @@ $govuk-assets-path: '/govuk/assets/';
 @import "overrides/govuk-panel";
 @import "overrides/govuk-error-summary";
 @import "overrides/govuk-skip-link";
+@import "overrides/govuk-table";
 @import "overrides/govuk-tag";
 @import "overrides/moj-button-menu";
 @import "overrides/moj-filter";
