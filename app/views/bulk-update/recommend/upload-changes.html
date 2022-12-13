@@ -26,12 +26,12 @@
         <ol class="govuk-list govuk-list--number">
 
           <li>
-            User the CSV file which you uploaded with details of trainees you wanted to recommend. You can
+            Use the CSV file which you uploaded with details of trainees you wanted to recommend. You can
             <a class="govuk-link--no-visited-state" href="/public/downloads/bulk-update/recommendOnly-with-data.csv" download="{{ (data.signedInProviders + '-with-pending') | slugify }}.csv">download your CSV file</a> if you need it.
             {# <a href="#">Download your CSV file with errors indicated</a>. #}
           </li>
 
-          <li>To recommend a trainee, add the date when tehy met QTS or EYTS standards. If you remove the date then the trainee will not be recommended.</li>
+          <li>To recommend a trainee, add the date when they met QTS or EYTS standards. If you remove the date then the trainee will not be recommended.</li>
 
           {# <li>Upload the CSV file.</li> #}
 
@@ -59,7 +59,7 @@
         {% if hasUpdated %}
           <p class="govuk-body">
             <a href="/bulk-update/recommend/check-pending-updates" class="govuk-link">
-              Return to pending updates without making changes
+              Return to check who you’ll recommend without making changes
             </a>
           </p>
         {% endif %}
@@ -75,5 +75,3 @@
   {# {% include "_includes/bulk-update/fix-file.html" %} #}
 
 {% endblock %}
-
-
