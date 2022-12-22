@@ -118,20 +118,14 @@
   {# Convert array to array of objects that table macro needs #}
   {% set tableRows = yearCounts | arrayToGovukTable %}
 
-  {% set tableCaption -%}
-    Summary of the {{previousAcademicYear}} academic year
-  {%- endset %}
-
   {{ govukTable({
-    caption: tableCaption,
-    captionClasses: "govuk-table__caption--m",
     firstCellIsHeader: false,
     head: [
       {
         text: "Type"
       },
       {
-        text: "Number of trainees"
+        text: "Number of trainees in 2021 to 2022"
       }
     ],
     rows: tableRows
@@ -149,7 +143,9 @@
 
       <p class="govuk-body">Use this report to help you sign off your data for the initial teacher training performance profiles publication.</p>
 
-      <p class="govuk-body">The report includes all trainees who:</p>
+      <h2 class="govuk-heading-m">Which trainees are included in this report</h2>
+
+      <p class="govuk-body">This report includes all trainees who:</p>
 
       <ul class="govuk-list govuk-list--bullet">
         <li>
@@ -160,15 +156,19 @@
         </li>
       </ul>
 
-      <p class="govuk-body">You can read about <a href="/guidance/performance-profiles">how to check, fix and sign off your data</a>. You must sign off the data by {{ performanceProfilesDate | govukDate('D MMMM YYYY') }} at 11:59pm.</p>
+      {{ yearSummaryTable | safe }}
 
-      <!-- {{ yearSummaryTable | safe }} -->
+      <h2 class="govuk-heading-m">How to use this report</h2>
+
+      <p class="govuk-body">You can read about <a href="/guidance/performance-profiles">how to check, fix and sign off your data</a>.</p>
+
+      <p class="govuk-body">You must sign off the data by {{ performanceProfilesDate | govukDate('D MMMM YYYY') }} at 11:59pm.</p>
 
       <input name="successFlash" type="hidden" value="Export successfully downloaded">
 
       {% if hasZeroTraineesToExport %}
         {{ govukInsetText({
-          text: "You have no trainees available to export. Check you have registered new trainees for the " + data.years.currentAcademicYear + " academic year."
+          text: "You have no trainees available to export. Check you have registered new trainees for the " + data.years.previousAcademicYear + " academic year."
         }) }}
       {% endif %}
 
