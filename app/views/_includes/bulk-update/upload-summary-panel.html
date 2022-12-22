@@ -1,0 +1,41 @@
+
+{% set uploadSummaryHtml %}
+  <h3 class="govuk-notification-banner__heading">
+    {{ data.bulkUpload.processedRows | length }} trainee records uploaded
+  </h3>
+  <p class="govuk">
+    Upload summary:
+  </p>
+  <ul class="govuk-list govuk-list--bullet">
+    {% if errorCount %}
+      <li>
+        {{ errorCount }} trainee {{ "records" | pluralise(errorCount) }} with errors
+      </li>
+    {% endif %}
+    {% if unchangedCount %}
+      <li>
+        {{ unchangedCount }} trainee {{ "records" | pluralise(unchangedCount) }} without changes
+      </li>
+    {% endif %}
+    {% if unchangedCount %}
+      <li>
+        {{ updatedCount }} pending {{ "update" | pluralise(updatedCount) }} to trainee records
+      </li>
+    {% endif %}
+  </ul>
+  {%  if updatedCount == 0 %}
+    <p class="govuk-body">
+      You need to fix the errors before you can update the trainee records.
+    </p>
+  {% endif %}
+{% endset %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    {{ govukNotificationBanner({
+      html: uploadSummaryHtml,
+      type: 'success',
+      titleText: 'File uploaded'
+    }) }}
+  </div>
+</div>

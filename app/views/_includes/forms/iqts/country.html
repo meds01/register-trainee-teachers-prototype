@@ -29,11 +29,10 @@
   }) }}
 </div> #}
 
-{# Degree country #}
+{# Country where trainee is studying #}
 {{ appAutocompleteFromSelect({
-  label: {
-    _text: "In which country or territory is the degree institution based?",
-    classes: "govuk-label--s"
+  hint: {
+    text: "If the trainee is studying in more than one country or territory, choose the one where they’ll spend the most time."
   },
   id: 'iqts-country',
   name: "record[iqts][country]",
@@ -64,7 +63,7 @@
       autoselect: true,
       showAllValues: false
     }
-} ) }} 
+} ) }}
 </div>
 
 

@@ -7,20 +7,24 @@
 {% set filteredRecords = data.records | filterRecords(data) %}
 {% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
 
-{% set pageHeading = "Check pending updates before recommending trainees for " + traineesThatCanBeRecommended | getQualifications | orSeparate %}
+{% set qualificationText = traineesThatCanBeRecommended | getQualifications | orSeparate %}
+
+{% set pageHeading = "Check who you’ll recommend for " + qualificationText %}
 {% set navActive = 'bulk' %}
+
+
 
 {% set bulkOnly = true if data.settings.bulkLinksInPrimaryNav == "Show bulk recommend" %}
 
 {% if bulkOnly %}
   {% set tableHeadRow = [
       {
-        text: "Trainee",
-        classes: "app-table__column-30"
+        text: "CSV row",
+        classes: "app-table__column-5"
       },
       {
-        text: "Start academic year",
-        classes: "app-table__column-20"
+        text: "Trainee",
+        classes: "app-table__column-30"
       },
       {
         text: "Route and course",
@@ -33,6 +37,10 @@
     ]%}
 {% else %}
     {% set tableHeadRow = [
+      {
+        text: "Row",
+        classes: "app-table__column-10"
+      },
       {
         text: "Name",
         classes: "app-table__column-20"
@@ -58,6 +66,7 @@
 
 {% set qtsTableBodyRows  = [] %}
 {% set eytsTableBodyRows = [] %}
+{% set allAwardsTableBodyRows = [] %}
 
 {# Combines errors and processed if the user has 'fixed the errors' #}
 {% if data.bulk.recommendFixErrors %}
@@ -74,14 +83,18 @@
 {% for row in processedRows %}
 
   {% set routeAndCourseHtml %}
+
+    {% set isPublishCourse = row.trainee.courseDetails.isPublishCourse | falsify %}
     <p class="govuk-body govuk-!-margin-bottom-1">
       {{ row.trainee.route }}
     </p>
-    {% if row.trainee.courseDetails.courseNameShort %}
-      <p class="govuk-body govuk-!-margin-bottom-0">
-        {{ row.trainee.courseDetails.courseNameShort }}
-      </p>
-    {% endif %}
+    <span class="govuk-hint">
+      {% if isPublishCourse %}
+        {{ row.trainee.courseDetails.courseNameLong }}
+      {% else %}
+        {{ row.trainee | getAllocationSubject }}
+      {% endif %}
+    </span>
   {% endset %}
 
   
@@ -106,19 +119,30 @@
       </p>
     {% endset %}
 
+    {% set dateAndAwardHtml %}
+      <p class="govuk-body govuk-!-margin-bottom-1">
+        {{ row.assessmentDate | govukDate('DD/MM/YYYY')}}
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-0 govuk-hint">
+        {{ row.trainee | getQualificationText }}
+      </p>
+    {% endset %}
+
     {% if bulkOnly %}
       {% set tableRow = [
+        { text: row.rowNumber       | safe      },
         { text: traineeHtml        | safe      },
-        { text: row.trainee.academicYear       },
         { text: routeAndCourseHtml | safe      },
-        { text: row.assessmentDate | govukDate }
+        { html: dateAndAwardHtml }
+        
       ]%}
     {% else %}
       {% set tableRow = [
-        { text: traineeInfoHtml    | safe },
-        { text: routeAndCourseHtml | safe },
+        { text: row.rowNumber    | safe },
+        { html: traineeInfoHtml    | safe },
+        { html: routeAndCourseHtml | safe },
         { text: qualification },
-        { text: row.assessmentDate | govukDate }
+        { text: row.assessmentDate | govukDate('DD/MM/YYYY') }
       ]%}
     {% endif %}
   
@@ -129,6 +153,9 @@
     {% set eytsTableBodyRows = eytsTableBodyRows | push(tableRow) %}
   {% endif %}
 
+  {% set allAwardsTableBodyRows = allAwardsTableBodyRows | push(tableRow) %}
+  
+
 {% endfor %}
 
 {% set qtsTableCaption  = "Trainees being recommended for QTS (" + qtsTableBodyRows.length + ")" %}
@@ -136,11 +163,7 @@
 {% set tableCaptionClasses = "govuk-table__caption--m" %}
 
 {% set buttonText %}
-  {% if qtsTableBodyRows.length > 0 and eytsTableBodyRows.length > 0 %}
-    Recommend {{ qtsTableBodyRows.length }} {{ "trainee" | pluralise(qtsTableBodyRows.length) }} for QTS and {{ eytsTableBodyRows.length }} {{ "trainee" | pluralise(eytsTableBodyRows.length) }} for EYTS
-  {% else %}
-    Recommend {{ qtsTableBodyRows.length + " trainees for QTS" if qtsTableBodyRows.length > 0 }}{{ eytsTableBodyRows.length + " trainees for QTS" if eytsTableBodyRows.length > 0 }}
-  {% endif %}
+  Recommend {{processedRows.length}} {{ "trainee" | pluralise(processedRows.length) }} for {{ qualificationText }}
 {% endset %}
 
 {% set bulkPath = "recommend" %}
