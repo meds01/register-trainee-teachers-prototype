@@ -1,6 +1,9 @@
 {% extends "_templates/_guidance-page.html" %}
 
-{% set performanceProfilesDate = "2023-1-31" %}
+
+{% set endYear = data.years.currentAcademicYear | academicYearToYear + 1 %}
+
+{% set performanceProfilesDate = endYear + "-1-31" %}
 
 {% set pageHeading = 'Sign off your list of trainees from {{ data.years.previousAcademicYear }} for the performance profiles publication' %}
 
@@ -17,7 +20,7 @@ This is so that the data can be included in the annual initial teacher training 
 You need a list of all registered trainees who studied in the {{ data.years.previousAcademicYear }} academic year. You can get this by either:
 
 - downloading a [report with the data you need to check](/reports/performance-profiles)
-- exporting a [list of registered trainees filtered to show the {{ data.years.previousAcademicYear }} academic year](/records?%5BfilterAcademicYears%5D=2021+to+2022)
+- exporting a [list of registered trainees filtered to show the {{ data.years.previousAcademicYear }} academic year](/records?filterAcademicYears={{data.years.previousAcademicYear | urlencode }})
 
 ## Check your trainee data
 

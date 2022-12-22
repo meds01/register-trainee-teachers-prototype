@@ -13,7 +13,8 @@
 
 {% set pageHeading = 'Trainees who studied in the ' + previousAcademicYear + ' academic year' %}
 
-{% set performanceProfilesDate = "2023-1-31" %}
+{% set endYear = data.years.currentAcademicYear | academicYearToYear + 1 %}
+{% set performanceProfilesDate = endYear + "-1-31" %}
 
 {% set viewingUserIsScitt = data.settings.userActiveProvider | providerIsScitt %}
 
@@ -125,7 +126,7 @@
         text: "Type"
       },
       {
-        text: "Number of trainees in 2021 to 2022"
+        text: "Number of trainees in " + data.years.previousAcademicYear
       }
     ],
     rows: tableRows
