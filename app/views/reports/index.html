@@ -27,14 +27,11 @@
       </li>
 
       <li>
-        <a class="govuk-link" href="/reports/itt-new-starter-data-sign-off">
-          Export new trainee data for the {{data.years.currentAcademicYear}} academic year for sign off
+        <a class="govuk-link" href="/reports/itt-new-starter-data-sign-off">New trainees for the {{data.years.currentAcademicYear}} academic year</a> - for census sign off
         </a>
       </li>
       <li>
-        <a class="govuk-link" href="/reports/performance-profiles">
-          Export trainee data for the {{data.years.previousAcademicYear}} academic year for performance profiles sign off
-        </a>
+        <a class="govuk-link" href="/reports/performance-profiles">Trainees who studied in the {{data.years.previousAcademicYear}} academic year</a> - for performance profiles sign off
       </li>
 
       {# HESA export only relevant to HEIs #}
@@ -46,7 +43,7 @@
         </li>
       {% endif %}
     </ul>
-    
+
   </div>
 </div>
 {% endblock %}
