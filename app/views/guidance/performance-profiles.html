@@ -1,0 +1,49 @@
+{% extends "_templates/_guidance-page.html" %}
+
+
+{% set endYear = data.years.currentAcademicYear | academicYearToYear + 1 %}
+
+{% set performanceProfilesDate = endYear + "-1-31" %}
+
+{% set pageHeading = 'Sign off your list of trainees from {{ data.years.previousAcademicYear }} for the performance profiles publication' %}
+
+{% block guidanceContent %}
+
+# Sign off your list of trainees from {{ data.years.previousAcademicYear }} for the performance profiles publication
+
+You need to sign off your list of trainee teachers from the {{ data.years.previousAcademicYear }} academic year by {{ performanceProfilesDate | govukDate('D MMMM YYYY') }} at 11:59pm.
+
+This is so that the data can be included in the annual initial teacher training performance profiles publication. This will be published on GOV.UK.
+
+## Find your trainee data
+
+You need a list of all registered trainees who studied in the {{ data.years.previousAcademicYear }} academic year. You can get this by either:
+
+- downloading a [report with the data you need to check](/reports/performance-profiles)
+- exporting a [list of registered trainees filtered to show the {{ data.years.previousAcademicYear }} academic year](/records?filterAcademicYears={{data.years.previousAcademicYear | urlencode }})
+
+## Check your trainee data
+
+Check that all your {{ data.years.previousAcademicYear }} trainees are listed. For each trainee you should check:
+
+- course details
+- status
+- the date they were awarded QTS or EYTS, deferred or withdrew from the course, unless they are still studying
+
+## Fix mistakes in your trainee data
+
+You need to fix any mistakes before you sign off the data.
+
+If the trainee is shown in this service as awarded or withdrawn, you should email becomingateacher@digital.education.gov.uk.
+
+If the trainee is shown in this service as actively training or deferred, you should make the change:
+
+- in this service if your organisation is a provider of school-centred initial teacher training (SCITT)
+- through the Higher Education Statistics Agency (HESA) if your organisation is a higher education institution (HEI) and the trainee was registered through HESA
+- in this service if your organisation is an HEI and the trainee was not registered through HESA
+
+## Sign off your trainee data
+
+A senior person from your organisation must [complete a form to sign off the data](#). This should not be the same person who entered the data.
+
+{% endblock %}

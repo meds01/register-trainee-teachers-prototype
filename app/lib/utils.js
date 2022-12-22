@@ -1127,6 +1127,24 @@ exports.isWithdrawn = record => {
   return record?.status == "Withdrawn"
 }
 
+exports.withdrawnWithin90days = record => {
+  if (!exports.isWithdrawn(record)) return false
+
+  let startDate = record?.trainingDetails?.commencementDate || record?.courseDetails?.startDate
+  let withdrawDate = record?.withdraw?.date
+
+  if (record.id == "710729a1-3a2e-42ef-924d-16d44f3d28e6/"){
+    console.log({startDate, withdrawDate})
+  }
+
+  if (!startDate || !withdrawDate) return false
+
+  let dateToCheck = moment(startDate).add(90, 'days')
+
+  return moment(withdrawDate).isBefore(dateToCheck)
+
+}
+
 // Todo: this should probably combine with the active stuff
 exports.isInTraining = record => {
 

@@ -504,6 +504,7 @@ module.exports = router => {
     else {
       record.previousStatus = record.status
       record.status = 'Withdrawn'
+      record.withdraw.date = filters.toDateObject(record.withdraw.date)
       delete record.withdrawDateRadio
 
       let withdrawalReasonText = `Date trainee withdrew: ${filters.govukDate(record.withdraw.date)}`
