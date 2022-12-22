@@ -147,11 +147,9 @@
 
       <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
-      <p class="govuk-body">You can use this report to help you sign off your data for the initial teacher training (ITT) performance profiles publication.</p>
+      <p class="govuk-body">Use this report to help you sign off your data for the initial teacher training performance profiles publication.</p>
 
-      <p class="govuk-body">You must check it, fix any mistakes and sign it off by 4pm on {{ performanceProfilesDate | govukDate('D MMMM YYYY') }}.</p>
-
-      <p class="govuk-body">The export includes all trainees who:</p>
+      <p class="govuk-body">The report includes all trainees who:</p>
 
       <ul class="govuk-list govuk-list--bullet">
         <li>
@@ -162,64 +160,9 @@
         </li>
       </ul>
 
-      {{ yearSummaryTable | safe }}
+      <p class="govuk-body">You can read about <a href="/guidance/performance-profiles">how to check, fix and sign off your data</a>. You must sign off the data by {{ performanceProfilesDate | govukDate('D MMMM YYYY') }} at 11:59pm.</p>
 
-      <h2 class="govuk-heading-m">Check your trainee data</h2>
-
-      <p class="govuk-body">You need to check that:
-
-      <ul class="govuk-list govuk-list--bullet">
-        <li>
-          all your 2020 to 2021 trainees are listed, including any who deferred or withdrew from the course
-        </li>
-        <li>
-        the number of trainees awarded qualified teacher status (QTS) or early years teacher status (EYT) is accurate
-        </li>
-      </ul>
-
-      <p class="govuk-body">For each trainee you need to check:</p>
-
-      <ul class="govuk-list govuk-list--bullet">
-        <li>
-          course details
-        </li>
-        <li>
-          status
-        </li>
-        <li>
-          the date they were awarded QTS, deferred or withdrew from the course, unless they are still studying
-        </li>
-      </ul>
-
-      <h2 class="govuk-heading-m">Fix mistakes</h2>
-
-      <p class="govuk-body">If the trainee has been awarded or withdrawn, email <a class="govuk-link" href="mailto:becomingateacher@digital.education.gov.uk?subject=Accessibility%20issues%20">becomingateacher@digital.education.gov.uk</a>.</p>
-
-      <p class="govuk-body">If the trainee is still studying or has deferred, how you fix a mistake depends on whether you registered the trainee using HESA or this service.</p>
-
-      <h3 class="govuk-heading-s">Trainees registered using HESA</h3>
-
-      <p class="govuk-body">TBD how to fix hesa trainees?</p>
-
-      <h3 class="govuk-heading-s">Trainees registered using this service</h3>
-
-      <p class="govuk-body">If the trainee is still studying or has deferred, you should update the their details with the correct information.</p>
-
-      <h2 class="govuk-heading-m">Sign off your trainee data</h2>
-
-      <p class="govuk-body">Once you’ve checked your data, a senior person from your organisation should sign it off <a href="#" class="govuk-link">using this form (opens in a new tab)</a>.</p>
-
-      <p class="govuk-body">You must sign off your data on or before {{ performanceProfilesDate | govukDate('dddd D MMMM YYYY') }}.</p>
-
-      <p class="govuk-body">If you do not do this then your trainees may be excluded from the ITT performance profiles publication.</p>
-
-      <h2 class="govuk-heading-m">How trainee data will be used in the ITT performance profiles publication</h2>
-
-      <p class="govuk-body">Some trainees listed in this export will not be included in the ITT performance profiles publication. For example, trainees who withdrew within 90 days of the course start will not be included.</p>
-
-      <p class="govuk-body">To find out how the data will be used, read the <a href="https://explore-education-statistics.service.gov.uk/methodology/initial-teacher-training-performance-profiles-methodology" class="govuk-link">Initial Teacher Training performance profiles methodology (opens in a new tab)</a>.</p>
-
-      <p class="govuk-body">You need to check and sign off all the trainee data in the export.</p>
+      <!-- {{ yearSummaryTable | safe }} -->
 
       <input name="successFlash" type="hidden" value="Export successfully downloaded">
 
@@ -230,7 +173,7 @@
       {% endif %}
 
       {% set buttonText -%}
-        Export new trainee data ({{traineeCount}} {{"trainee" | pluralise(traineeCount)}})
+        Export trainee data ({{traineeCount}} {{"trainee" | pluralise(traineeCount)}})
       {%- endset %}
 
       {{ govukButton({
