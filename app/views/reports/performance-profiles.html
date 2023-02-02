@@ -157,13 +157,13 @@
         </li>
       </ul>
 
-      {{ yearSummaryTable | safe }}
+      {# {{ yearSummaryTable | safe }} #}
 
       <h2 class="govuk-heading-m">How to use this report</h2>
 
       <p class="govuk-body">You can read about <a href="/guidance/performance-profiles">how to check, fix and sign off your data</a>.</p>
 
-      <p class="govuk-body">You must sign off the data by {{ performanceProfilesDate | govukDate('D MMMM YYYY') }} at 11:59pm.</p>
+      <p class="govuk-body">You must sign off the data by {{ performanceProfilesDate | govukDate('YYYY-M-D') }} at 11:59pm.</p>
 
       <input name="successFlash" type="hidden" value="Export successfully downloaded">
 
