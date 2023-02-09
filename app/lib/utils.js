@@ -1287,15 +1287,14 @@ exports.dateHesaRecordUnlocked = record => {
 
 exports.isHesaAndLocked = record => {
 
-  const source = record?.source
-
   let shouldBeLocked = false
 
   if (exports.sourceIsHESA(record)) {
 
      // Hardcoded to locked until we decide on rules for unlocking
-     shouldBeLocked = true
-
+     if (record?.hesa?.editingEnabled != true){
+       shouldBeLocked = true
+     }
      // if (exports.finishedEarlierThanThisAcademicYear(record)) {
      //    shouldBeLocked = false
      // } else if (exports.isFutureYear(record)) {

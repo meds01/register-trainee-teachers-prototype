@@ -1,6 +1,8 @@
 
 {% set deferUrl %}
-  {% if (record | ittInTheFuture) %}
+  {% if record | isHesaAndLocked %}
+    {{ referrer + "/hesa-warning" | addReferrer(referrer) }}
+  {% elseif (record | ittInTheFuture) %}
     {{ referrer + "/defer/confirm" | addReferrer(referrer) }}
   {% elseif (record | ittStartedButNoCommencementDate) %}
     {{ referrer + "/defer/did-trainee-start" | addReferrer(referrer) }}
@@ -10,7 +12,9 @@
 {% endset %}
 
 {% set reinstateUrl %}
-  {% if (record | ittInTheFuture) %}
+  {% if record | isHesaAndLocked %}
+    {{ referrer + "/hesa-warning" | addReferrer(referrer) }}
+  {% elseif (record | ittInTheFuture) %}
     {{ referrer + "/reinstate/confirm" }}
   {% else %}
     {{ referrer + "/reinstate" }}
@@ -41,7 +45,7 @@
 
 {% if data.settings.useCombinedRemoveFlow == 'false' %}
   {# Remove record #}
-  {% if not record.trainingDetails.commencementDate %}
+  {% if not record.trainingDetails.commencementDate and not record | isHesaAndLocked %}
     {% set actionItems = actionItems | push(['remove', removeUrl]) %}
   {% endif %}
 {% endif %}
@@ -131,7 +135,7 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full record-actions">
 
-    <div class="">
+    <div class="govuk-button-group govuk-!-margin-bottom-0">
       {% if record.status | canRecommendForQts %}
         {% if record | ittInTheFuture %}
           {{ govukInsetText({
@@ -147,7 +151,7 @@
           {{ govukButton({
             text: "Recommend trainee for " + (record | getQualificationText),
             href: referrer + '/qualification/outcome-date',
-            classes: "govuk-!-margin-bottom-0"
+            classes: ""
           }) }}
         {% endif %}
       {% elseif record.status == "Pending TRN" %}
@@ -161,7 +165,25 @@
           classes: "govuk-!-margin-0"
         }) }}
       {% endif %}
+
+      {# <span class="govuk-body">or</span> #}
+      {# <form action="{{ recordPath }}/toggle-editing" method="POST"> #}
+        {% if record | sourceIsHESA and record.hesa.editingEnabled != true %}
+          {# {{ govukButton({
+            text: "Disable editing on this record",
+            classes: "govuk-button--secondary"
+          }) }} #}
+        {# Won't currently get shown because this banner only shows if the record is locked - to consider later #}
+        {# {% else %} #}
+          {{ govukButton({
+            text: "Enable editing for trainee record",
+            classes: "govuk-button--secondary",
+            href: recordPath + "/toggle-editing"
+          }) }}
+        {% endif %}
+      {# </form> #}
     </div>
+
 
     <div class="">
       {{actionSentenceHtml | safe}}
@@ -177,7 +199,7 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <hr class="govuk-section-break govuk-section-break--l govuk-!-margin-top-3 govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-!-margin-top-s govuk-!-margin-bottom-3 govuk-section-break--visible">
   </div>
 </div>
 
