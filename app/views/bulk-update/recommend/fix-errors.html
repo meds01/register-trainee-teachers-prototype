@@ -17,11 +17,12 @@
 {% set errorCount     = data.bulkUpload.processedRows | where("uploadStatus", "error") | length  %}
 {% set unchangedCount = data.bulkUpload.processedRows | where("uploadStatus", "unchanged") | length  %}
 {% set updatedCount   = data.bulkUpload.processedRows | where("uploadStatus", "updated") | length  %}
+
 {% set hasErrors = errorCount > 0 %}
 {% set hasUpdated = updatedCount > 0 %}
 
 {% set pageHeading %}
-  Fix errors for {{errorCount}} {{ "trainee" | pluralise(errorCount) }} in the file you uploaded
+  Review errors for {{errorCount}} {{ "trainee" | pluralise(errorCount) }} in the CSV file you uploaded
 {% endset %}
 
 {% set qualifications = traineesThatCanBeRecommended | getQualifications | orSeparate %}
@@ -41,7 +42,8 @@
 
       <form action="/bulk-update/recommend/fix-errors-answer" method="post" novalidate>
 
-        <p class="govuk-body">You need to fix errors in the CSV file you uploaded before you can recommend trainees for QTS or EYTS.</p>
+        <p class="govuk-body">You cannot recommend a trainee for QTS or EYTS if there’s an error in their row in the CSV file. You need to fix the errors if you want to recommend them.</p>
+
         <ol class="govuk-list govuk-list--number">
 
           <li>
@@ -77,16 +79,16 @@
           text: "Upload file and check who you’ll recommend"
         }) }}
 
-        {% if hasErrors and hasUpdated %}
+        {% if hasUpdated %}
           <p class="govuk-body">
             <a href="/bulk-update/recommend/check-pending-updates" class="govuk-link">
-              Skip trainees with errors and check who you’ll recommend
+              Skip {{ 'trainee' | pluralise(errorCount) }} with errors and check who you’ll recommend
             </a>
           </p>
         {% endif %}
 
         <p class="govuk-body">
-          <a href="/bulk-update/cancel-bulk-updates" class="govuk-link">Cancel bulk {{ "recommending trainees" if data.settings.bulkLinksInPrimaryNav == "Show bulk recommend" else "updates to records" }}</a>
+          <a href="/bulk-update/recommend/cancel-bulk-updates" class="govuk-link">Cancel bulk {{ "recommending trainees" if data.settings.bulkLinksInPrimaryNav == "Show bulk recommend" else "updates to records" }}</a>
         </p>
       </form>
 

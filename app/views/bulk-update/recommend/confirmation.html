@@ -4,23 +4,23 @@
 {% set backLink = 'false' %}
 
 {% set filteredRecords = data.records | filterRecords(data) %}
+
+{# Remaining trainees #}
 {% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
+{# {% set traineesThatCanBeRecommended = 0 %} #}
 
+{# Sets numbers for errors summary #}
+{% set errorCount     = data.bulkUpload.processedRows | where("uploadStatus", "error") | length  %}
+{% set unchangedCount = data.bulkUpload.processedRows | where("uploadStatus", "unchanged") | length  %}
+{% set updatedCount   = data.bulkUpload.processedRows | where("uploadStatus", "updated") | length  %}
 
-{% if data.bulk.recommendFixErrors %}
-  {% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "error")  %}
-  {% set processedRows = processedRows | combineArrays(data.bulkUpload.processedRows | where("uploadStatus", "updated")) %}
-{% else %}
-  {% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "updated") %}
-{% endif %}
+{% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "updated") %}
 
 {# Get an array of the trainees #}
 {% set processedTrainees = processedRows | lodash("map", "trainee") %}
 
+{% set pageHeading = updatedCount + " trainees recommended for " + processedTrainees | getQualifications | orSeparate %}
 
-{% set pageHeading = processedTrainees | length  + " trainee records recommended for " + processedTrainees | getQualifications | orSeparate %}
-
-{% set incompleteRecords = filteredRecords | filterByIncomplete %}
 
 {% block content %}
 
@@ -32,26 +32,30 @@
       }) }}
 
       <p class="govuk-body">
-        The Department for Education will award {{ traineesThatCanBeRecommended | getQualifications | orSeparate }} within 3 working days.
+        The Department for Education will award {{ processedTrainees | getQualifications | orSeparate }} within 3 working days.
       </p>
 
       <h2 class="govuk-heading-m">
         Next steps
       </h2>
 
-      <p class="govuk-body">
-        You can now view your:
-      </p>
+      {% if traineesThatCanBeRecommended | length %}
+        <p class="govuk-body">
+          You can recommend {{traineesThatCanBeRecommended | length }} more trainees. You can now:
+        </p>
 
-      <ul class="govuk-list govuk-list--bullet">
-        <li><a href="/records" class="govuk-link">registered trainees</a></li>
-        <li><a href="/records?filterEndYears={{ data.years.currentAcademicYear }}" class="govuk-link">registered trainees whose course ends in the {{ data.years.currentAcademicYear }} academic year</a></li>
-        {% if incompleteRecords | length%}
-        <li><a href="/records?filterCompleteStatus=Incomplete" class="govuk-link">incomplete trainees</a></li>
-        {% endif %}
-        <li><a href="/drafts" class="govuk-link">draft trainees</a></li>
-      </ul>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><a href="/bulk-update/recommend" class="govuk-link">bulk recommend more trainees</a></li>
+          <li><a href="/records" class="govuk-link">view your list of registered trainees</a></li>
+        </ul>
 
+      {% else %}
+        <p class="govuk-body">You can now <a href="/records" class="govuk-link">view your list of registered trainees</a>.</p>
+      {% endif %}
+
+      
+
+      {{data | log}}
     </div>
   </div>
 
