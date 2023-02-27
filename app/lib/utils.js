@@ -1108,11 +1108,11 @@ exports.isTrnReceived = record => {
 }
 
 exports.isRecommended = record => {
-  return record?.status.includes("recommended") //EYTS recommended and QTS recommended
+  return record?.status?.includes("recommended") //EYTS recommended and QTS recommended
 }
 
 exports.isAwarded = record => {
-  return record?.status.includes("awarded") // EYTS awarded and QTS awarded
+  return record?.status?.includes("awarded") // EYTS awarded and QTS awarded
 }
 
 exports.isDeferred = record => {
@@ -1153,7 +1153,7 @@ exports.isInTraining = record => {
     "TRN received",
     "QTS recommended",
     "EYTS recommended"
-  ].includes(record.status)
+  ].includes(record?.status)
 
   let ittInTheFuture = exports.ittInTheFuture(record)
   return isActiveStatus && !ittInTheFuture
@@ -1422,7 +1422,8 @@ exports.sectionIsComplete = section => {
 }
 
 exports.academicQualificationsApply = record => {
-  return trainingRoutes?.[record?.route]?.academicQualificationsApply && exports.isPostgraduate(record)
+  // return trainingRoutes?.[record?.route]?.academicQualificationsApply && exports.isPostgraduate(record)
+  return false
 }
 
 // Check if all sections are complete
@@ -2462,9 +2463,27 @@ exports.recommendForAward = (record, params) => {
     console.log(`Recommending trainee ${record.trn}`)
     record.status = `${exports.getQualificationText(record)} recommended`
     _.set(record, 'qualificationDetails.standardsAssessedOutcome', "Passed")
-    record.qualificationRecommendedDate = record?.qualificationDetails?.outcomeDate || params?.date || new Date()
+    // record.qualificationRecommendedDate = record?.qualificationDetails?.outcomeDate || params?.date || new Date()
     record.updatedDate = new Date()
     exports.addEvent(record, `Trainee recommended for ${exports.getQualificationText(record)}`)
+  }
+  return true
+}
+
+// Revert a record back to TRN received
+exports.revertAward = (record, params) => {
+
+  if (!record || !record.status.includes('awarded')){
+    return false // nothing to do
+  }
+  else {
+    console.log(`Un-awarding trainee ${record.trn}`)
+
+    // Revert to in training status
+    record.status = `TRN received`
+    delete record.qualifcationDetails
+    record.updatedDate = new Date()
+    // exports.addEvent(record, `${exports.getQualificationText(record)} award reverted`)
   }
   return true
 }

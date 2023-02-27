@@ -1,0 +1,65 @@
+
+
+{% set statusTag %}
+  {{ govukTag({
+    text: "TRN received",
+    classes: "TRN received" | getStatusClass
+  })}}
+{% endset %}
+
+
+{% set revertRows = [
+  {
+    key: {
+      text: "New record status"
+    },
+    value: {
+      html: statusTag | safe
+    }
+  },
+  {
+    key: {
+      text: "Trainee timeline comment"
+    },
+    value: {
+      text: record.revert.withdraw.auditLogComment
+    },
+    actions: {
+      items: [{
+        href: "./details" | addReferrer(referrer),
+        text: "Change",
+        visuallyHiddenText: "trainee timeline comment"
+      }]
+    } if canAmend
+  },
+  {
+    key: {
+      text: "Zendesk URL"
+    },
+    value: {
+      text: record.revert.withdraw.zendeskUrl
+    },
+    actions: {
+      items: [{
+        href: "./details" | addReferrer(referrer),
+        text: "Change",
+        visuallyHiddenText: "zendesk URL"
+      }]
+    } if canAmend
+  }
+] | removeEmpty %}
+
+{% set revertHtml %}
+  {{ govukSummaryList({
+    rows: revertRows,
+    attributes: {
+      style: "overflow:hidden;"
+    }
+  }) }}
+{% endset %}
+
+{{ appSummaryCard({
+  classes: "govuk-!-margin-bottom-6",
+  titleText: "Undo withdrawal",
+  html: revertHtml
+}) }}

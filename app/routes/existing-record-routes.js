@@ -311,6 +311,40 @@ module.exports = router => {
     }
   })
 
+  // Revert QTS or EYTS status
+  router.post('/record/:uuid/admin/revert/teaching-status/update', (req, res) => {
+    const data = req.session.data
+    const record = data.record
+    let referrer = utils.getReferrer(req.query.referrer)
+    // Update failed or no data
+    if (!record){
+      res.redirect(`/record/${req.params.uuid}`)
+    }
+    else {
+      if (record.status.includes('awarded')){
+        console.log('un-awarding trainee')
+        utils.revertAward(record) // Recommend a group of trainees for EYTS/QTS first so data is correct
+        utils.deleteTempData(data)
+        utils.updateRecord(data, record, false)
+        let reasonText = `${record?.revert?.teachingStatus?.auditLogComment}`
+        utils.addEvent(record, `${utils.getQualificationText(record)} award removed`, reasonText)
+
+        req.flash('success', `${utils.getQualificationText(record)} award removed`)
+      }
+      else {
+        console.log("Error: can't un-award a trainee that is not awarded")
+      }
+      delete record?.revert
+      if (referrer){
+        res.redirect(utils.getReferrerDestination(req.query.referrer))
+      }
+      else {
+        // More likely we've come from this tab where most things are on
+        res.redirect(`/record/${req.params.uuid}`)
+      }
+    }
+  })
+
   // Get timeline items and pass to view
   router.get('/record/:uuid/timeline', (req, res) => {
     const data = req.session.data
@@ -395,6 +429,20 @@ module.exports = router => {
       res.redirect(`/record/${req.params.uuid}/remove/did-trainee-start${referrer}`)
     }
 
+  })
+
+  // Admins deleting a record
+  router.post('/record/:uuid/admin/delete/update', (req, res) => {
+    const data = req.session.data
+    const records = data.records
+    let theRecord = data.record
+    if (theRecord.id){
+      let recordIndex = records.findIndex(record => record.id == theRecord.id)
+      _.pullAt(records, [recordIndex]) // delete item at index
+    }
+    utils.deleteTempData(data)
+    req.flash('success', 'Record deleted')
+    res.redirect('/records')
   })
 
 
@@ -565,6 +613,43 @@ module.exports = router => {
       utils.addEvent(record, "Trainee withdrawn", withdrawalReasonText)
       req.flash('success', 'Trainee withdrawn')
       res.redirect('/record/' + req.params.uuid)
+    }
+  })
+
+    // Revert QTS or EYTS status
+  router.post('/record/:uuid/admin/revert/withdraw/update', (req, res) => {
+    const data = req.session.data
+    const record = data.record
+    let referrer = utils.getReferrer(req.query.referrer)
+    // Update failed or no data
+    if (!record){
+      res.redirect(`/record/${req.params.uuid}`)
+    }
+    else {
+      if (record.status.includes('Withdrawn')){
+        console.log('un-withdrawing trainee')
+        record.status = "TRN received"
+        delete record.withdraw
+        // let revertWithdrawalReasonText = `Reason: Provider withdrew trainee by accident`
+        let reasonText = `${record?.revert?.withdraw?.auditLogComment}`
+        utils.addEvent(record, "Withdrawal undone", reasonText)
+        // utils.revertWithdrawal(record) // Recommend a group of trainees for EYTS/QTS first so data is correct
+        utils.deleteTempData(data)
+        utils.updateRecord(data, record, false)
+        req.flash('success', `Withdrawal undone`)
+      }
+      else {
+        console.log("Error: cannot un-withdraw a trainee that is not currently withdrawn")
+      }
+      // Delete temporary revert data
+      delete record?.revert
+      if (referrer){
+        res.redirect(utils.getReferrerDestination(req.query.referrer))
+      }
+      else {
+        // More likely we've come from this tab where most things are on
+        res.redirect(`/record/${req.params.uuid}`)
+      }
     }
   })
 
