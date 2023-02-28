@@ -48,6 +48,8 @@
     <li>Notify the provdier that the change has been made</li>
   </ol> #}
 
+  {% set dqtAllowsReverts = true %}
+
   {% if dqtAllowsReverts %}
     {% set revertUrl = recordPath + "/admin/revert/withdraw/details" | addReferrer(referrer) %}
   {% else %}
