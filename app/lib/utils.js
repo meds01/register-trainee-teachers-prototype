@@ -15,6 +15,7 @@ const ittSubjects            = require('./../data/itt-subjects')
 const generateReference      = require('./../data/generators/reference-number')
 const academicQualifications = require('./../data/academic-qualifications.js')
 const years                  = require('./../data/years.js')
+const traineeProblems        = require('./../data/trainee-problems.json')
 
 let skipCourseDatesPage = false
 
@@ -1481,6 +1482,31 @@ exports.recordIsComplete = function(record, data=false ) {
   return recordIsComplete
 }
 
+// Check if a record is mentioned in our problems file
+exports.recordHasProblem = (record) => {
+
+  if (!record) {
+    console.log("Error with recordHasProblem: record not provided")
+    return false
+  }
+  else {
+    return traineeProblems.find(problem => problem.trainees.includes(record.id)) || false
+  }
+}
+
+// Return array of problems for a given record
+exports.getProblems = (record) => {
+
+  if (!record) {
+    console.log("Error with getProblems: record not provided")
+    return false
+  }
+  else {
+    return traineeProblems.filter(problem => problem.trainees.includes(record.id)) || false
+  }
+}
+
+
 // Checks if the placement criteria has been met
 exports.needsPlacementDetails = function(record, data = false) {
 
@@ -1795,8 +1821,13 @@ exports.filterRecords = (records, data, filters = {}) => {
 
   if (filters.completeStatus){
     filteredRecords = filteredRecords.filter(record => {
-      let completeStatus = (exports.recordIsComplete(record, data)) ? 'Complete' : 'Incomplete'
-      return filters.completeStatus.includes(completeStatus)
+      let status = (exports.recordIsComplete(record, data)) ? ['Complete'] : ['Incomplete']
+      let hasProblem = exports.recordHasProblem(record)
+      if (hasProblem) {
+        status.push('Has problems')
+      }
+
+      return filters.completeStatus.some( item => status.includes(item))
     })
   }
 

@@ -10,7 +10,11 @@
 
 {% set registeredTrainees = filteredRecords | filterByStatus("Draft", true) %}
 {% set pageHeading = "Your trainee teachers" %}
-{# {% set currentTrainees = registeredTrainees | filterByActive %} #}
+
+{# Note: filterBySignedIn isn't designed to work on non-records, but as the name is the same, it works ok #}
+
+{% set traineesWithProblems = registeredTrainees | filterByFunction('recordHasProblem') %}
+{# {% set traineeProblems = data.traineeProblems | filterBySignedIn(data) %} #}
 
 {% block content %}
 
@@ -129,13 +133,13 @@
 
 
       </div>
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      {# <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible"> #}
     </div>
   </div>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
-      <h2 class="govuk-heading-l">Available to do</h2>
+      <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Available to do</h3>
     </div>
   </div>
 
@@ -161,10 +165,19 @@
           <br>(out of {{activeTrainees | length}})
         {% endset %}
 
-        <a href="/records?filterCompleteStatus=Incomplete" class="status-card status-card status-card--incomplete">
-          <span class="status-card__count">{{ incompleteTrainees | length }}</span>
-          <span class="status-card__status">Records you can complete</span><span class="govuk-visually-hidden"> records. View these records.</span>
-        </a>
+        {% if incompleteTrainees | length %}
+          <a href="/records?filterCompleteStatus=Incomplete" class="status-card status-card status-card--incomplete">
+            <span class="status-card__count">{{ incompleteTrainees | length }}</span>
+            <span class="status-card__status">Records you can complete</span><span class="govuk-visually-hidden"> records. View these records.</span>
+          </a>
+        {% endif %}
+
+        {% if traineesWithProblems | length %}
+          <a href="/records?filterCompleteStatus=Has problems" class="status-card status-card status-card--problem">
+            <span class="status-card__count">{{ traineesWithProblems | length }}</span>
+            <span class="status-card__status">Trainees with problems</span><span class="govuk-visually-hidden"></span>
+          </a>
+        {% endif %}
 
       </div>
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
