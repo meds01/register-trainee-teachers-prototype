@@ -169,7 +169,7 @@ module.exports = router => {
     let record = _.get(data, 'record') // copy record
     let isComplete = utils.recordIsComplete(record)
     let errorList = (errors) ? true : false
-    
+
     if (utils.sourceIsApply(record) && data.settings.groupApplySections){
       res.render('new-record/check-record-apply-grouped-sections', {errorList, recordIsComplete: isComplete})
     }
@@ -248,7 +248,7 @@ module.exports = router => {
     let courseStartDate = record?.courseDetails?.startDate
     let traineeStarted = record?.trainingDetails?.traineeStarted
     let commencementDate = record?.trainingDetails?.commencementDate
-    
+
     if ((!traineeStarted) || (traineeStarted == 'started-itt-later' && !commencementDate)) {
       res.redirect('/new-record/trainee-start-date')
     } else {
@@ -269,6 +269,41 @@ module.exports = router => {
 
       res.redirect(`/new-record/submitted`)
     }
+  })
+
+  // Let users pick Apply applications to import.
+  router.post('/drafts/apply-importable/update', (req, res) => {
+    let data = req.session.data
+    let selectedRecordIds = data?.applyImportable?.selectedTrainees || []
+
+    let selectedCount = selectedRecordIds.length
+    // console.log(`Apply importable selected trainees: ${selectedCount}`)
+
+    if (selectedCount > 0) {
+      let selectedRecords = utils.getRecordsById(data.records, selectedRecordIds)
+
+      // Advance the records to Draft and remove old data
+      selectedRecords.forEach(record => {
+        record.status = "Draft"
+        delete record?.applyData?.applyStatus
+        delete record?.applyData?.requiredConditions
+      })
+
+      let flashMessage
+      if (selectedCount == 1) {
+        flashMessage = `One application from Apply imported as a draft trainee`
+      }
+      else {
+        flashMessage = `${selectedCount} applications from Apply imported as draft trainees`
+      }
+      req.flash('success', flashMessage)
+    }
+
+    delete data.applyImportable
+
+    // Return with Apply filter applied. In reality we should probably restore previous filters?
+    res.redirect(`/drafts?filterSource=Apply`)
+
   })
 
 }

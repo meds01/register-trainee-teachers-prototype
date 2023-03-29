@@ -1,0 +1,107 @@
+
+{% set checkboxItems = [] %}
+
+{% for trainee in applyPendingRecords  %}
+
+  {% set subjects -%}
+    {%- if trainee.courseDetails | subjectsAreIncomplete -%}
+      {{- trainee.courseDetails.courseNameShort or trainee.courseDetails.subjects | prettifySubjects -}}
+    {%- else -%}
+      {{- (trainee.courseDetails.subjects | prettifySubjects | falsify ) or trainee.courseDetails.courseNameShort -}}
+    {%- endif %}
+  {%- endset %}
+
+  {% set traineeHintHtml %}
+    <div class="govuk-hint">{{ subjects }}, {{trainee.route | lower}}</div>
+
+    {% set conditionsHtml %}
+      {# <p class="govuk-hint">Pending conditions:</p> #}
+      {% if trainee.applyData.requiredConditions | length >1 %}
+        <ul class="govuk-list govuk-list--bullet">
+          {% for condition in trainee.applyData.requiredConditions %}
+            <li class="govuk-hint">{{condition}}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        {{ trainee.applyData.requiredConditions[0] }}
+      {% endif %}
+
+    {% endset %}
+
+    {% set detailsSummaryText -%}
+      View pending {{"condition" | pluralise(trainee.applyData.requiredConditions | length) }}<span class="govuk-visually-hidden"> for {{trainee.personalDetails.fullName}}</span>
+    {% endset %}
+
+    {{ govukDetails({
+      summaryText: detailsSummaryText | safe,
+      html: conditionsHtml
+    }) }}
+
+    {# {{govukTag({
+      text: trainee.status,
+      classes: trainee.status | getStatusClass
+    })}} #}
+  {% endset %}
+
+  {% set checkboxItems = checkboxItems | push({
+    value: trainee.id,
+    _text: trainee.personalDetails.fullName,
+    checked: checked(data.applyImportable.selectedTrainees, trainee.id),
+    text: trainee.personalDetails.fullName,
+    hint: {
+      html: traineeHintHtml
+    }
+  }) %}
+
+{% endfor %}
+
+<h1 class="govuk-heading-l">{{pageHeading}}</h1>
+
+<p class="govuk-body">
+  Applications are automatically imported from the Apply for teacher training (Apply) service when they reach ‘recruited’ status. If an application has any offer conditions then this will only happen once all conditions have been met.
+</p>
+
+<p class="govuk-body">
+  Imported applications become draft trainee records in this service.
+</p>
+
+<p class="govuk-body">
+You can also manually import an application while it still has ‘conditions pending’ status in Apply, if it’s for a course which either:
+</p>
+
+<ul class="govuk-list govuk-list--bullet">
+  <li>started within the past 3 months</li>
+  <li>will start before the end of next month</li>
+</ul>
+
+<p class="govuk-body">
+  Only manually import applications if you expect that the offer conditions will be met. You should still mark the conditions as met in Apply.
+</p>
+
+{% if applyPendingRecords | length > 0 %}
+
+  {{ govukCheckboxes({
+    fieldset: {
+      legend: {
+        text: "Applications to import with conditions pending",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: checkboxItems
+  } | decorateAttributes(data, "data.applyImportable.selectedTrainees")) }}
+
+{#   {% set buttonText %}
+    {% if applyPendingRecords | length == 1 %}
+      Import application as draft
+    {% else %}
+      Import applications as drafts
+    {% endif %}
+  {% endset %} #}
+
+  {{ govukButton({
+    text: "Continue"
+  }) }}
+
+
+{% endif %}

@@ -7,6 +7,7 @@
 {% set draftRecords = filteredRecords | filterByStatus("Draft") %}
 {% set totalDraftCount = draftRecords | length %}
 {% set applyDraftCount = draftRecords | where("source", "Apply") | length %}
+{% set applyPendingRecordsCount = data.records | filterRecords(data) | filterByStatus("Apply pending conditions") | length %}
 
 {% set registeredTrainees = filteredRecords | filterByStatus("Draft", true) %}
 {% set pageHeading = "Your trainee teachers" %}
@@ -39,6 +40,12 @@
           {% if applyDraftCount > 0 %}
             <li><a class="govuk-link" href="/drafts?filterSource=Apply">View draft trainees imported from Apply ({{applyDraftCount}}{% if totalDraftCount != applyDraftCount %} out of {{totalDraftCount}} draft trainees{% endif %})</a></li>
           {% endif %}
+          {# {% if applyPendingRecordsCount > 0 %}
+            <li><a class="govuk-link" href="/drafts/apply-importable">{{ applyPendingRecordsCount }} Apply offer available to import</a></li>
+          {% endif %} #}
+          {% if applyPendingRecordsCount > 0 %}
+            <li><a class="govuk-link" href="/drafts/apply-importable">Import applications from Apply with conditions pending ({{applyPendingRecordsCount}})</a></li>
+          {% endif %}
 
           {% if isAuthorised('addTrainees') %}
             <li class="govuk-!-margin-bottom-0">
@@ -55,10 +62,10 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
       </div>
     </div>
-        
+
   {% endif %}
-      
-    
+
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
       <h2 class="govuk-heading-l">Registered trainees</h2>
