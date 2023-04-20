@@ -64,7 +64,7 @@
           }
         ]
       } | decorateAttributes(data, "data.settings.highlightInvalidAnswers")) }}
-      
+
       {{ govukCheckboxes({
         items: [
           {
@@ -189,6 +189,32 @@
         ]
       } | decorateAttributes(data, "data.settings.traineeExportQuestionStyle")) }}
 
+      {{ govukRadios({
+        fieldset: {
+          legend: {
+            text: "Sign off period",
+            classes: "govuk-fieldset__legend--s"
+          }
+        },
+        hint: {
+          text: "This affects which reports and guidance are available."
+        },
+        items: [
+          {
+            text: "None",
+            value: "none"
+          },
+          {
+            text: "Census",
+            value: "census"
+          },
+          {
+            text: "Performance profiles",
+            value: "performanceProfiles"
+          }
+        ]
+      } | decorateAttributes(data, "data.settings.signOffPeriods")) }}
+
       {{ govukSelect({
         id: "hesa-guidance-style",
         name: "settings[hesaGuidanceStyle]",
@@ -233,7 +259,7 @@
           items: allTrainingRoutes
         } | decorateAttributes(data, "data.settings.enabledTrainingRoutes")) }}
       {% endset %}
-      
+
 
       {{ govukDetails({
         summaryText: "Enabled training routes",

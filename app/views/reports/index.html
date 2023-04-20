@@ -11,44 +11,63 @@
 {% set needAcademicAward = traineesThatCanBeRecommended | filterByAcademicQualificationsApply %}
 {% set qualifications = traineesThatCanBeRecommended | getQualifications | orSeparate %}
 
-
 {% block content %}
 {{super()}}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
-    <ul class="govuk-list govuk-list--spaced">
-      {# Census report put on pause for now #}
-      {# <li>
-        <a class="govuk-link" href="/reports/census">
-          Export census data for the {{data.years.currentAcademicYear}} academic year
-        </a>
-      </li> #}
+    {% if data.settings.signOffPeriods == "none" %}
 
-      {# Hidden for user research as not available in production #}
-      {# <li>
-        <a class="govuk-link" href="/reports/choose-trainee-records">
-          Choose trainee records to export
-        </a>
-      </li> #}
+      <p class="govuk-body">No reports are currently available.</p>
 
-      <li>
-        <a class="govuk-link" href="/reports/itt-new-starter-data-sign-off">New trainees for the {{data.years.currentAcademicYear}} academic year</a> - for census sign off
-      </li>
-      <li>
-        <a class="govuk-link" href="/reports/performance-profiles">Trainees who studied in the {{data.years.previousAcademicYear}} academic year</a> - for performance profiles sign off
-      </li>
+      <p>When they’re available, you’ll be able to download reports showing:</p>
 
-      {# HESA export only relevant to HEIs #}
-      {% if activeProvider.accreditingProviderType == "HEI" %}
-        <li>
-          <a class="govuk-link" href="/reports/hesa">
-            Export HESA (Higher Education Statistics Agency) records
+      <ul class="govuk-list govuk-list--bullet">
+
+        <li>new trainees for the {{data.years.currentAcademicYear}} academic year - for census sign off</li>
+        <li>trainees who studied in the {{data.years.previousAcademicYear}} academic year - for performance profiles sign off</li>
+
+      </ul>
+
+      <p class="govuk-body"> You can read <a class="govuk-link" href="#">guidance about signing off performance profiles</a>.</p>
+
+    {% else %}
+
+      <ul class="govuk-list govuk-list--spaced">
+        {# Hidden for user research as not available in production #}
+        {# <li>
+          <a class="govuk-link" href="/reports/choose-trainee-records">
+            Choose trainee records to export
           </a>
+        </li> #}
+
+        {# HESA export only relevant to HEIs - hidden as not available in production #}
+        {# {% if activeProvider.accreditingProviderType == "HEI" %}
+          <li>
+            <a class="govuk-link" href="/reports/hesa">
+              Export HESA (Higher Education Statistics Agency) records
+            </a>
+          </li>
+        {% endif %} #}
+
+        <li>
+          {% if data.settings.signOffPeriods == "census" %}
+            <a class="govuk-link" href="/reports/itt-new-starter-data-sign-off">New trainees for the {{data.years.currentAcademicYear}} academic year</a> - for census sign off
+          {% else %}
+            New trainees for the {{data.years.currentAcademicYear}} academic year - will be available for census sign off
+          {% endif %}
         </li>
-      {% endif %}
-    </ul>
+        <li>
+          {% if data.settings.signOffPeriods == "performanceProfiles" %}
+            <a class="govuk-link" href="/reports/performance-profiles">Trainees who studied in the {{data.years.previousAcademicYear}} academic year</a> - for performance profiles sign off
+          {% else %}
+            Trainees who studied in the {{data.years.previousAcademicYear}} academic year</a> - will be available for performance profiles sign off
+          {% endif %}
+        </li>
+      </ul>
+
+    {% endif %}
 
   </div>
 </div>
