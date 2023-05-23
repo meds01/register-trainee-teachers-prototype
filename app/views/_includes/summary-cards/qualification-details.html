@@ -1,4 +1,9 @@
 
+{% set outcomeDate = record.qualificationDetails.outcomeDate | toDateObject %}
+
+{# The prototype doesn’t store an award date, so fake it by adding 1 to the outcomeDate #}
+{% set awardDate = moment(outcomeDate).add(1, 'days') %}
+
 {% set qualificationDetailsRows = [
   {
     key: {
@@ -17,6 +22,14 @@
       ]
     } if canAmend and false
   },
+  {
+    key: {
+      text: "Award date"
+    },
+    value: {
+      text: (awardDate | govukDate or 'Not provided') if record | isAwarded else "Waiting for award"
+    }
+  } if showAwardDateRow,
   {
     key: {
       text: "Qualification with " + record | getQualificationText
