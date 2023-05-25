@@ -1,8 +1,5 @@
 
-{% set outcomeDate = record.qualificationDetails.outcomeDate | toDateObject %}
-
-{# The prototype doesn’t store an award date, so fake it by adding 1 to the outcomeDate #}
-{% set awardDate = moment(outcomeDate).add(1, 'days') %}
+{% set outcomeDate = record.qualificationDetails.outcomeDate | govukDate %}
 
 {% set qualificationDetailsRows = [
   {
@@ -21,13 +18,13 @@
         }
       ]
     } if canAmend and false
-  },
+  } if not showAwardDateRow,
   {
     key: {
       text: "Award date"
     },
     value: {
-      text: (awardDate | govukDate or 'Not provided') if record | isAwarded else "Waiting for award"
+      text: (outcomeDate or 'Not provided') if record | isAwarded else "Waiting for award - met standards on " + outcomeDate
     }
   } if showAwardDateRow,
   {
@@ -70,7 +67,7 @@
   {{ govukSummaryList({
     rows: qualificationDetailsRows
   }) }}
-  
+
 {% endset %}
 
 {% set complete = record.contactDetails | sectionIsComplete %}
@@ -117,6 +114,5 @@
     } if activeTab == 'trainee-details' and data.isAdmin,
     html: qualificationDetailsHtml
   }) }}
-  
-{% endif %}
 
+{% endif %}
