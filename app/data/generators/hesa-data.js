@@ -19,8 +19,6 @@ module.exports = record => {
 
   let hesaId = `2294839475${faker.datatype.number({'min': 1000000, 'max': 9999999})}`
 
-  delete record.contactDetails.address
-  delete record.contactDetails.addressType
   record.hesa = {
     id: hesaId
   }

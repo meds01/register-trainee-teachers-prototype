@@ -1,14 +1,16 @@
 {% extends "_templates/_new-record.html" %}
 
-{% set pageHeading = "Trainee personal details" %}
+{% set pageHeading = "Personal details" %}
 
-{% if data.record | sourceIsApply %}
-  {% set formAction = "./../overview" | orReferrer(referrer) %}
-{% else %}
+{% set formAction = "./email" | addReferrer(referrer) %}
+
+{% if data.record.personalDetails.email %}
   {% set formAction = "./confirm" | addReferrer(referrer) %}
+{% else %}
+  {% set formAction = "./email" | addReferrer(referrer) %}
 {% endif %}
 
-{% block formContent %}
-  {% include "_includes/forms/personal-details.html" %}
-{% endblock %}
 
+{% block formContent %}
+  {% include "_includes/forms/personal-details/main-details.html" %}
+{% endblock %}

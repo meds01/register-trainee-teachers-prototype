@@ -5,7 +5,7 @@
       text: "Full name"
     },
     value: {
-      text: record.personalDetails | getFullName or 'Not entered'
+      text: record.personalDetails | getFullName or 'Not provided'
     },
     actions: {
       items: [{
@@ -20,7 +20,7 @@
       text: "Date of birth"
     },
     value: {
-      text: record.personalDetails.dateOfBirth | govukDate or "Not entered"
+      text: record.personalDetails.dateOfBirth | govukDate or "Not provided"
     },
     actions: {
       items: [{
@@ -35,7 +35,7 @@
       text: "Sex"
     },
     value: {
-      text: record.personalDetails.sex or 'Not entered'
+      text: record.personalDetails.sex or 'Not provided'
     },
     actions: {
       items: [
@@ -63,7 +63,24 @@
         }
       ]
     } if canAmend
-  } if isAuthorised('viewDiversity')
+  } if isAuthorised('viewDiversity'),
+  {
+    key: {
+      text: "Personal email address"
+    },
+    value: {
+      text: record.personalDetails.email or 'Not entered'
+    },
+    actions: {
+      items: [
+        {
+          href: recordPath + "/personal-details/email" | addReferrer(referrer),
+          text: "Change",
+          visuallyHiddenText: "email"
+        }
+      ]
+    } if canAmend
+  }
 ] | removeEmpty %}
 
 {% set personalDetailsHtml %}
@@ -109,5 +126,5 @@
     titleText: "Personal details",
     html: personalDetailsHtml
   }) }}
-  
+
 {% endif %}

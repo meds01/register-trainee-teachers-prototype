@@ -1,0 +1,20 @@
+{% include "_includes/trainee-name-caption.njk" %}
+
+{{ govukInput({
+  id: "email-address",
+  name: "record[personalDetails][email]",
+  value: record.personalDetails.email,
+  classes: "govuk-!-width-two-thirds",
+  isPageHeading: true,
+  label: {
+    text: pageHeading,
+    classes: "govuk-label--l"
+  },
+  hint: {
+    text: "The trainee’s TRN will be sent to this address. They’ll also use it to sign in to access their QTS or EYTS certificate after they finish training."
+  }
+}) }}
+
+{{ govukButton({
+  text: "Continue"
+}) }}
