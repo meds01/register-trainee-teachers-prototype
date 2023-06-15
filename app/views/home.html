@@ -193,11 +193,11 @@
         {% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
         {% set traineeCount = traineesThatCanBeRecommended | length %}
         {# Bulk recommend #}
-        {# <a href="/bulk-update/recommend/upload" class="status-card">
-          <span class="status-card__count">{{traineeCount}}</span> #}
+        <a href="/bulk-update/recommend/upload" class="status-card">
+          <span class="status-card__count">{{traineeCount}}</span>
           {# <span class="status-card__status">{{data.years.currentAcademicYear}} academic year</span><span class="govuk-visually-hidden"> records. View these records.</span> #}
-          {# <span class="status-card__status">Trainees you can bulk recommend for QTS or EYTS</span><span class="govuk-visually-hidden"> records. View these records.</span>
-        </a> #}
+          <span class="status-card__status">Trainees you can bulk recommend for QTS or EYTS</span><span class="govuk-visually-hidden"> records. View these records.</span>
+        </a>
 
         {# Incomplete #}
         {% set incompleteTrainees = registeredTrainees | filterByIncomplete %}
