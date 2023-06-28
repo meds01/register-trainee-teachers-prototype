@@ -4,11 +4,15 @@
 
 {% block guidanceContent %}
 
-# Registering trainees through HESA (Higher Education Statistics Agency)
+# Register trainees through HESA (Higher Education Statistics Agency)
 
-Training providers that use HESA need to submit data through the HESA data collection system to register their trainees. Your trainee data will then be imported into Register where you can check it.
+Training providers that use HESA can register their trainees by submitting data through the HESA data collection system.
 
-[Find out when you should submit your data for the 2022 to 2023 academic year](/guidance/dates-and-deadlines).
+Your trainee data will then be imported into the Register trainee teachers service (Register).
+
+You’ll be able to view or export trainee data, including your trainees’ teacher reference numbers (TRNs).
+
+[Find out when you should submit your trainee data](/guidance/dates-and-deadlines).
 
 {% include "_includes/guidance/training-status-homepage.md" %}
 
@@ -17,15 +21,23 @@ Training providers that use HESA need to submit data through the HESA data colle
 {% include "_includes/guidance/training-status-homepage.md" %}
 {% endset %}
 
-## Checking data imported into Register from HESA
+## Check data imported into Register from HESA
 
-Once your data has been imported into Register, you can check it. There are 3 ways to do this and you can choose whichever one suits you. These are:
+You can check your trainee data once it has been imported into Register. At any time you can:
 
-* using the new ‘Reports’ section and exporting a CSV of your new trainees for the {{ data.years.currentAcademicYear }} academic year
-* exporting a CSV of your trainees in the ‘Registered trainees’ section, using the ‘start year’ filter to select the current academic year
-* checking your trainees directly in the service one by one
+* export a CSV file listing your trainees from the ‘Registered trainees’ section, using the ‘academic year’ or ‘start year’ filter to select the current academic year
+* check your trainees directly in the service one by one
 
-In the CSV export from Register, we’ve also included a column called ‘hesa_updated_at’ which shows you the last time a record was updated through HESA. You can use this column to check all your new trainees have imported into Register.
+In the CSV export from the ‘Registered trainees’ section, we’ve included a column called ‘hesa_updated_at’ which shows you the last time a record was updated through HESA. Use this column to check that all your new trainees have imported into Register from HESA.
+
+You can also export CSV files from the ‘Reports’ section when you need to sign off your:
+
+* new trainees for the census in October
+* trainee outcomes from the previous academic year for performance profiles in January
+
+
+
+
 
 ## Adding specific information to a trainee record
 
@@ -41,7 +53,7 @@ In HESA, withdrawn trainees are recorded by using the [Student.ENDDATE field](ht
 
 ### Expected end date for trainees
 
-HESA has added a new field in their collection for the 2022 to 2023 academic year called ‘expected end date’ ([EXPECTEDENDDATE](https://www.hesa.ac.uk/collection/c22053/e/expectedenddate)). 
+HESA has added a new field in their collection for the 2022 to 2023 academic year called ‘expected end date’ ([EXPECTEDENDDATE](https://www.hesa.ac.uk/collection/c22053/e/expectedenddate)).
 
 The Register service requires this field to issue TRNs and for funding purposes. You must fill out this field in HESA, it will then import into Register as ‘ITT end date’.
 
@@ -73,7 +85,7 @@ If a trainee does not start their training at all, and will never start, you do 
 When a trainee has successfully completed their training (or completed their assessment for an ‘assessment only’ route) and met the required standards, you can recommend them for QTS or EYTS in the Teaching Regulation Agency (TRA) portal.
 
 {% set detailsContent %}
-Once you’ve recommended a trainee for QTS or EYTS, you’ll find their record by going to the ‘Awarded this year’ training status on the Homepage. You can also filter by ‘Awarded’ on the records list page. 
+Once you’ve recommended a trainee for QTS or EYTS, you’ll find their record by going to the ‘Awarded this year’ training status on the Homepage. You can also filter by ‘Awarded’ on the records list page.
 
 {% endset %}
 
