@@ -2,7 +2,7 @@
 
 When you sign into Register you will see ‘Draft trainees’ and ‘Registered trainees’ sections on the homepage.
 
-‘Registered trainees’ are grouped by the following ‘training statuses’:
+‘Registered trainees’ are grouped by the following training statuses:
 
 * **‘Course not started yet’** - trainees who are registered but their course has not started
 * **‘In training’** - all trainees currently doing training, excluding those on courses that have not started or are deferred
