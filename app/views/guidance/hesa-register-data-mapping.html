@@ -129,7 +129,7 @@ For school placements (HESA field PLMNTSCH), although we collect and use this da
 
 {# Make an object that contains all the page data #}
 {% set allTableContent = {
-  "trainee-progress": 
+  "trainee-progress":
   {
     name: "Trainee progress",
     content: traineeProgressContent
@@ -168,7 +168,6 @@ For school placements (HESA field PLMNTSCH), although we collect and use this da
 
     Where possible, these tables follow the same order as the CSV export and a trainee’s record in Register.
 
-    
   </div>
 </div>
 
@@ -215,7 +214,7 @@ For school placements (HESA field PLMNTSCH), although we collect and use this da
   }) }}
 
 {# Flat content #}
-{% else %} 
+{% else %}
 
   {% for key, tabData in allTableContent %}
     <h2 class="govuk-heading-m">{{tabData.name}}</h2>
