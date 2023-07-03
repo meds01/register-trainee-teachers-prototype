@@ -30,6 +30,7 @@ let endAcademicYears = [
 ]
 
 let academicYears = [
+  "2023 to 2024",
   "2022 to 2023",
   "2021 to 2022",
   "2020 to 2021 and prior"
