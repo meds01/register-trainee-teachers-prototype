@@ -100,6 +100,18 @@ module.exports = router => {
     }
   })
 
+
+
+  // Confirm edited QTS date
+  router.post('/record/:uuid/qualification/outcome-date-edit-confirm', (req, res) => {
+    const data = req.session.data
+    const record = data.record
+
+    res.redirect(`/record/${req.params.uuid}/qualification/outcome-date-edit-confirm`)
+  })
+
+
+
   // Collect the EYTS/QTS outcome date and set up the forking
   router.post('/record/:uuid/qualification/outcome-date-answer', (req, res) => {
     const data = req.session.data
