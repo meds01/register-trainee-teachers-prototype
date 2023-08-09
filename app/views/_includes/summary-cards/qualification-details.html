@@ -25,6 +25,15 @@
     },
     value: {
       text: (outcomeDate or 'Not provided') if record | isAwarded else "Waiting for award - met standards on " + outcomeDate
+    } if canAmend,
+    actions: {
+        items: [
+        {
+            href: recordPath + "/qualification/outcome-date-edit" | addReferrer(referrer),
+            text: "Change",
+            visuallyHiddenText: "award date"
+        }
+        ]
     }
   } if showAwardDateRow,
   {

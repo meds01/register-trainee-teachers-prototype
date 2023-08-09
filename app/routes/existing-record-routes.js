@@ -91,14 +91,26 @@ module.exports = router => {
       if (newRecord.status.includes('recommended') || newRecord.status == 'TRN received'){
         utils.recommendForAward(newRecord) // Recommend a group of trainees for EYTS/QTS first so data is correct
         utils.deleteTempData(data)
-        
+
         newRecord.status = `${utils.getQualificationText(newRecord)} awarded` // EYTS/QTS awarded
-        
+
         utils.updateRecord(data, newRecord, `${utils.getQualificationText(newRecord)} awarded`)
       }
       res.redirect(`/record/${req.params.uuid}`)
     }
   })
+
+
+
+  // Confirm edited QTS date
+  router.post('/record/:uuid/qualification/outcome-date-edit-confirm', (req, res) => {
+    const data = req.session.data
+    const record = data.record
+
+    res.redirect(`/record/${req.params.uuid}/qualification/outcome-date-edit-confirm`)
+  })
+
+
 
   // Collect the EYTS/QTS outcome date and set up the forking
   router.post('/record/:uuid/qualification/outcome-date-answer', (req, res) => {
@@ -116,9 +128,9 @@ module.exports = router => {
       }
       if (radioChoice == "Yesterday") {
         record.qualificationDetails.outcomeDate = filters.toDateArray(moment().subtract(1, "days"))
-      } 
+      }
     }
-    
+
     // Was the EYTS/QTS outcome a pass?
     // Not curretly being used
     if (_.get(data, "record.qualificationDetails.standardsAssessedOutcome") == 'No'){
@@ -163,14 +175,14 @@ module.exports = router => {
       res.redirect(`/record/${req.params.uuid}`)
     }
     else {
-      
+
       // Trainees may withdraw at this stage
       let isWithdrawing = (_.get(newRecord, "qualificationDetails.withdrawalStatus") == "Withdrawing from programme")
       // console.log('is withdrawing:', isWithdrawing)
       newRecord.qtsNotPassedOutcomeDate = new Date()
       utils.deleteTempData(data)
       utils.addEvent(newRecord, "Trainee did not pass their QTS")
-      
+
       if (isWithdrawing){
         utils.addEvent(newRecord, "Trainee withdrawn")
         newRecord.previousStatus = newRecord.status
@@ -188,7 +200,7 @@ module.exports = router => {
       }
       else {
         // newRecord.status = 'TRN received' // TODO: should we have a new status?
-        req.flash('success', 'Training outcome recorded')   
+        req.flash('success', 'Training outcome recorded')
       }
       newRecord.previousQtsOutcome = newRecord.notPassedReason
       delete newRecord?.notPassedReason
@@ -216,10 +228,10 @@ module.exports = router => {
       let radioChoice = newRecord.deferredDateRadio
       if (radioChoice == "Today") {
         newRecord.deferredDate = filters.toDateArray(filters.today())
-      } 
+      }
       if (radioChoice == "Yesterday") {
         newRecord.deferredDate = filters.toDateArray(moment().subtract(1, "days"))
-      } 
+      }
       res.redirect(`/record/${req.params.uuid}/defer/confirm${referrer}`)
     }
   })

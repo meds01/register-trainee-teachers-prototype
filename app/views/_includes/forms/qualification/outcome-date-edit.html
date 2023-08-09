@@ -1,0 +1,39 @@
+{% set customOutcomeDateArray = record.qualificationDetails.outcomeDate | toDateArray %}
+
+{% include "_includes/trainee-name-caption.njk" %}
+
+{{ govukDateInput({
+fieldset: {
+legend: {
+text: pageHeading,
+isPageHeading: true,
+classes: "govuk-fieldset__legend--l"
+}
+},
+id: custom-qualificationOutcomeRecorded-date,
+namePrefix: "record[qualificationDetails][outcomeDate]",
+hint: {
+text: "For example, " + "" | today | toDateArray | spaceSeparate
+},
+items: [
+{
+name: "day",
+classes: "govuk-input--width-2",
+value: customOutcomeDateArray["0"]
+},
+{
+name: "month",
+classes: "govuk-input--width-2",
+value: customOutcomeDateArray["1"]
+},
+{
+name: "year",
+classes: "govuk-input--width-4",
+value: customOutcomeDateArray["2"]
+}
+]
+}) }}
+
+{{ govukButton({
+text: "Continue"
+}) }}
