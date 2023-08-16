@@ -21,18 +21,18 @@
 {# Get placement (if it exists) from existing data #}
 
 {# Merge with temp store #}
-{% set providerTemp = provider | mergeObjects(data.providerTemp) %}
+{% set schoolTemp = provider | mergeObjects(data.schoolTemp) %}
 
 
 
-{% set providerTemp = providerTemp | setAttribute('type', provider | getProviderTypeString(true)) %}
+{% set schoolTemp = schoolTemp | setAttribute('type', provider | getProviderTypeString(true)) %}
 
 {% set teamInbox = provider.teamInbox or ("teacher-training@" + provider.name | makeFakeSchoolDomain) %}
 
-{% set providerTemp = providerTemp | setAttribute('teamInbox', teamInbox) %}
+{% set schoolTemp = schoolTemp | setAttribute('teamInbox', teamInbox) %}
 
 {# {{data | log}} #}
-{{providerTemp | log}}
+{{schoolTemp | log}}
 
 <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
@@ -42,7 +42,7 @@
     classes: "govuk-label--s"
   },
   classes: "govuk-!-width-two-thirds"
-}| decorateAttributes(providerTemp, "providerTemp.name"))}}
+}| decorateAttributes(schoolTemp, "schoolTemp.name"))}}
 
 {# {{ govukRadios({
   label: {
@@ -50,7 +50,7 @@
     classes: "govuk-label--s"
   },
   classes: "govuk-!-width-two-thirds"
-}| decorateAttributes(providerTemp, "providerTemp.type"))}} #}
+}| decorateAttributes(schoolTemp, "schoolTemp.type"))}} #}
 
 {{ govukRadios({
   fieldset: {
@@ -76,7 +76,7 @@
       value: "Lead school"
     }
   ]
-} | decorateAttributes(providerTemp, "providerTemp.type")) }}
+} | decorateAttributes(schoolTemp, "schoolTemp.type")) }}
 
 {% if isAccreditingProvider %}
   {{ govukInput({
@@ -85,7 +85,7 @@
       classes: "govuk-label--s"
     },
     classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(providerTemp, "providerTemp.ukprn"))}}
+  }| decorateAttributes(schoolTemp, "schoolTemp.ukprn"))}}
 
   {{ govukInput({
     label: {
@@ -93,7 +93,7 @@
       classes: "govuk-label--s"
     },
     classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(providerTemp, "providerTemp.providerCode"))}}
+  }| decorateAttributes(schoolTemp, "schoolTemp.providerCode"))}}
 
   {{ govukInput({
     label: {
@@ -101,7 +101,7 @@
       classes: "govuk-label--s"
     },
     classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(providerTemp, "providerTemp.accreditationId"))}}
+  }| decorateAttributes(schoolTemp, "schoolTemp.accreditationId"))}}
 {% endif %}
 
 {% if isLeadSchool %}
@@ -111,7 +111,7 @@
       classes: "govuk-label--s"
     },
     classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(providerTemp, "providerTemp.urn"))}}
+  }| decorateAttributes(schoolTemp, "schoolTemp.urn"))}}
 {% endif %}
 
 {{ govukInput({
@@ -120,7 +120,7 @@
     classes: "govuk-label--s"
   },
   classes: "govuk-!-width-two-thirds"
-}| decorateAttributes(providerTemp, "providerTemp.teamInbox"))}}
+}| decorateAttributes(schoolTemp, "schoolTemp.teamInbox"))}}
 
 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
