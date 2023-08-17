@@ -1,14 +1,14 @@
 {% extends "_templates/_form.html" %}
 
 {% set pageHeading %}
-  Edit – {{ provider.name }}
+  Edit – {{ school.schoolName }}
 {% endset %}
 
 {% set formAction = "./confirm" %}
 
 {% set backText = "Back" %}
 {# {% set backLink = '/home' %} #}
-{# 
+{#
 {% set returnLink = {
   text: 'Cancel',
   href: './../' + uuid
@@ -16,20 +16,21 @@
 
 {% block formContent %}
 
-{% set isAccreditingProvider = provider | providerIsAccrediting %}
+{% set isAccreditingProvider = school | providerIsAccrediting %}
 
 {# Get placement (if it exists) from existing data #}
 
 {# Merge with temp store #}
-{% set schoolTemp = provider | mergeObjects(data.schoolTemp) %}
+{% set schoolTemp = school | mergeObjects(data.schoolTemp) %}
 
+{% set schoolTemp = school | setAttribute('name', school.schoolName) %}
+{% set schoolTemp = school | setAttribute('type', school.type) %}
 
+{# set providerTemp = providerTemp | setAttribute('type', provider | getProviderTypeString(true)) #}
+{% set schoolTemp = school | setAttribute('lead', school.isLeadSchool) %}
 
-{% set schoolTemp = schoolTemp | setAttribute('type', provider | getProviderTypeString(true)) %}
-
-{% set teamInbox = provider.teamInbox or ("teacher-training@" + provider.name | makeFakeSchoolDomain) %}
-
-{% set schoolTemp = schoolTemp | setAttribute('teamInbox', teamInbox) %}
+{% set schoolTemp = school | setAttribute('urn', school.urn) %}
+{% set schoolTemp = school | setAttribute('ukprn', school.ukprn) %}
 
 {# {{data | log}} #}
 {{schoolTemp | log}}
@@ -38,24 +39,25 @@
 
 {{ govukInput({
   label: {
-    text: "Organisation name",
+    text: "Name",
     classes: "govuk-label--s"
   },
   classes: "govuk-!-width-two-thirds"
-}| decorateAttributes(schoolTemp, "schoolTemp.name"))}}
+}| decorateAttributes(schoolTemp, "schoolTemp.schoolName"))}}
 
-{# {{ govukRadios({
-  label: {
-    text: "Organisation type",
-    classes: "govuk-label--s"
-  },
-  classes: "govuk-!-width-two-thirds"
-}| decorateAttributes(schoolTemp, "schoolTemp.type"))}} #}
+{{ govukInput({
+label: {
+text: "School type",
+classes: "govuk-label--s"
+},
+classes: "govuk-!-width-two-thirds"
+}| decorateAttributes(schoolTemp, "schoolTemp.type"))}}
+
 
 {{ govukRadios({
   fieldset: {
     legend: {
-      text: 'Organisation type',
+      text: 'Is a lead school?',
       classes: "govuk-fieldset__legend--s"
     }
   },
@@ -64,21 +66,28 @@
   },
   items: [
     {
-      text: "HEI",
-      value: "HEI"
+      text: "Yes",
+      value: "Yes",
+      checked: checked("if isLeadSchool Yes", "Yes")
     },
     {
-      text: "SCITT",
-      value: "SCITT"
-    },
-    {
-      text: "Lead school",
-      value: "Lead school"
+      text: "No",
+      value: "No",
+      checked: checked("if isLeadSchool No", "No")
     }
   ]
-} | decorateAttributes(schoolTemp, "schoolTemp.type")) }}
+} | decorateAttributes(schoolTemp, "schoolTemp.lead")) }}
 
-{% if isAccreditingProvider %}
+
+
+{{ govukInput({
+label: {
+text: "URN",
+classes: "govuk-label--s"
+},
+classes: "govuk-!-width-two-thirds"
+}| decorateAttributes(schoolTemp, "schoolTemp.urn"))}}
+
   {{ govukInput({
     label: {
       text: "UKPRN",
@@ -86,57 +95,6 @@
     },
     classes: "govuk-!-width-two-thirds"
   }| decorateAttributes(schoolTemp, "schoolTemp.ukprn"))}}
-
-  {{ govukInput({
-    label: {
-      text: "Provider code",
-      classes: "govuk-label--s"
-    },
-    classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(schoolTemp, "schoolTemp.providerCode"))}}
-
-  {{ govukInput({
-    label: {
-      text: "Accreditation ID",
-      classes: "govuk-label--s"
-    },
-    classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(schoolTemp, "schoolTemp.accreditationId"))}}
-{% endif %}
-
-{% if isLeadSchool %}
-  {{ govukInput({
-    label: {
-      text: "URN",
-      classes: "govuk-label--s"
-    },
-    classes: "govuk-!-width-two-thirds"
-  }| decorateAttributes(schoolTemp, "schoolTemp.urn"))}}
-{% endif %}
-
-{{ govukInput({
-  label: {
-    text: "Team inbox",
-    classes: "govuk-label--s"
-  },
-  classes: "govuk-!-width-two-thirds"
-}| decorateAttributes(schoolTemp, "schoolTemp.teamInbox"))}}
-
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-<h2 class="govuk-heading-m">Provider settings</h2>
-
-{{ govukCheckboxes({
-  idPrefix: "placement-section-complete",
-  name: "placementTemp[shouldImportFromApply]",
-  items: [
-    {
-      value: true,
-      text: 'Import application data from Apply',
-      checked: checked(shouldImportFromApply, true)
-    }
-  ]
-}) }}
 
 {{ govukButton({
   text: "Continue"
