@@ -1,7 +1,7 @@
 {% extends "_templates/_form.html" %}
 
 {% set pageHeading %}
-  Confirm changes to {{ provider.name }}
+  Confirm changes to {{ school.schoolName }}
 {% endset %}
 
 {% set backText = "Back" %}
@@ -12,19 +12,20 @@
   href: './../' + uuid
 } %} #}
 
+{% set formAction = './../' + uuid %}
 {% block formContent %}
 
-{% set isAccreditingProvider = provider | providerIsAccrediting %}
-{% set isLeadSchool = provider | providerIsLeadSchool %}
+<!--TODO: Fix this lead school assignment -->
+{# set isLeadSchool = schoolTemp | schoolIsLeadSchool #}
 
 {# Merge with temp store #}
-{% set providerTemp = provider | mergeObjects(data.providerTemp) %}
+{% set schoolTemp = provider | mergeObjects(data.schoolTemp) %}
 
 <h1 class="govuk-heading-l">{{pageHeading}}</h1>
 
-{% set provider = providerTemp %}
+{% set school = schoolTemp %}
 
-{% include "_includes/summary-cards/support/provider.html" %}
+{% include "_includes/summary-cards/support/school.html" %}
 
 {{ govukButton({
   text: "Confirm"
