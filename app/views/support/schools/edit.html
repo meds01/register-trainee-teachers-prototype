@@ -53,7 +53,7 @@ classes: "govuk-label--s"
 classes: "govuk-!-width-two-thirds"
 }| decorateAttributes(schoolTemp, "schoolTemp.type"))}}
 
-
+<!--TODO: Fix these radio states based on lead school assignment -->
 {{ govukRadios({
   fieldset: {
     legend: {
@@ -67,13 +67,11 @@ classes: "govuk-!-width-two-thirds"
   items: [
     {
       text: "Yes",
-      value: "Yes",
-      checked: checked("if isLeadSchool Yes", "Yes")
+      value: "Yes"
     },
     {
       text: "No",
-      value: "No",
-      checked: checked("if isLeadSchool No", "No")
+      value: "No"
     }
   ]
 } | decorateAttributes(schoolTemp, "schoolTemp.lead")) }}
