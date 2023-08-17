@@ -26,8 +26,8 @@
 {% set schoolTemp = school | setAttribute('name', school.schoolName) %}
 {% set schoolTemp = school | setAttribute('type', school.type) %}
 
-{# set providerTemp = providerTemp | setAttribute('type', provider | getProviderTypeString(true)) #}
-{% set schoolTemp = school | setAttribute('lead', school.isLeadSchool) %}
+<!--TODO: Fix this lead school assignment -->
+{# set isLeadSchool = schoolTemp | schoolIsLeadSchool #}
 
 {% set schoolTemp = school | setAttribute('urn', school.urn) %}
 {% set schoolTemp = school | setAttribute('ukprn', school.ukprn) %}

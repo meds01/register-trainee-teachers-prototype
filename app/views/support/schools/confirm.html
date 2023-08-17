@@ -15,10 +15,8 @@
 {% set formAction = './../' + uuid %}
 {% block formContent %}
 
-<!-- Fix undefined variables here
-    {# set isAccreditingProvider = provider | providerIsAccrediting #}
-    {# set isLeadSchool = provider | providerIsLeadSchool #}
--->
+<!--TODO: Fix this lead school assignment -->
+{# set isLeadSchool = schoolTemp | schoolIsLeadSchool #}
 
 {# Merge with temp store #}
 {% set schoolTemp = provider | mergeObjects(data.schoolTemp) %}
