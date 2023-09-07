@@ -1,0 +1,100 @@
+
+{% include "_includes/trainee-name-caption.njk" %}
+{# Hard code example caption for static design #}
+<span class="govuk-caption-l">Draft</span>
+<h1 class="govuk-heading-l">
+  {{pageHeading}}
+</h1>
+
+{% set bursary = record | getFinancialSupport %}
+
+{# Refactor this back to record.route #}
+{% set recordRoute = "Early years (postgrad)" %}
+
+{# We might not always have a bursary value at this stage - so conditionally set it #}
+{% set financialSupportValue = record | getFinancialSupportValue %}
+{% if financialSupportValue | falsify %}
+  {% set financialSupportValueText %} of {{ financialSupportValue | currency }}{% endset %}
+{% endif %}
+
+{# Early years either have a bursary or not - it’s not based on subject #}
+
+<p class="govuk-body">
+  {{ recordRoute }} has bursaries available. You need to check if the trainee is eligible for any of these.
+</p>
+
+<p class="govuk-body">You can <a href="https://www.gov.uk/government/publications/funding-initial-teacher-training-itt/funding-initial-teacher-training-itt-academic-year-2023-to-2024" class="govuk-link" rel="noreferrer noopener" target="_blank">check the funding rules for this academic year (opens in a new tab)</a></p>
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="awardGrant-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h1 class="govuk-fieldset__heading">
+                Should the provider be awarded a grant?
+            </h1>
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="awardGrant" name="awardGrant" type="radio" value="yes" aria-describedby="awardGrant-item-hint">
+                <label class="govuk-label govuk-radios__label" for="awardGrant">
+                    Yes
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="awardGrant-2" name="awardGrant" type="radio" value="no" aria-describedby="awardGrant-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="awardGrant-2">
+                    No
+                </label>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="fundingType-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h1 class="govuk-fieldset__heading">
+                Do you want to apply for a bursary for this trainee?
+            </h1>
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="fundingType" name="fundingType" type="radio" value="yes-tier-1" aria-describedby="fundingType-item-hint">
+                <label class="govuk-label govuk-radios__label" for="fundingType">
+                    Yes - Tier 1 (£5,000)
+                </label>
+                <div id="fundingType-item-hint" class="govuk-hint govuk-radios__hint">
+                    First-class honours degree, doctoral degree, medical masters (distinction)
+                </div>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="fundingType-2" name="fundingType" type="radio" value="yes-tier-2" aria-describedby="fundingType-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="fundingType-2">
+                    Yes - Tier 2 (£4,000)
+                </label>
+                <div id="fundingType-2-item-hint" class="govuk-hint govuk-radios__hint">
+                    2:1 honours degree, master’s degree
+                </div>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="fundingType-3" name="fundingType" type="radio" value="yes-tier-3" aria-describedby="fundingType-3-item-hint">
+                <label class="govuk-label govuk-radios__label" for="fundingType-3">
+                    Yes - Tier 3 (£2,000)
+                </label>
+                <div id="fundingType-3-item-hint" class="govuk-hint govuk-radios__hint">
+                    2:2 honours degree
+                </div>
+            </div>
+            <div class="govuk-radios__divider">or</div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="fundingType-4" name="fundingType" type="radio" value="none" aria-describedby="fundingType-4-item-hint">
+                <label class="govuk-label govuk-radios__label" for="fundingType-4">
+                    None
+                </label>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+{{ govukButton({
+  text: "Continue"
+}) }}
