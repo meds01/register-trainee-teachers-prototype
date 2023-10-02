@@ -18,10 +18,35 @@
   {{ record.route }} has a bursary available{{ financialSupportValueText }}. You need to check if the trainee is eligible for this bursary.
 </p>
 
-<p class="govuk-body">
-  <a href="https://www.gov.uk/government/publications/funding-initial-teacher-training-itt/funding-initial-teacher-training-itt-academic-year-2021-to-2022" class="govuk-link" rel="noreferrer noopener" target="_blank">Funding: initial teacher training (ITT), academic year 2021 to 2022 (opens in new tab)
-  </a>
-</p>
+<p class="govuk-body">You can <a href="https://www.gov.uk/government/publications/funding-initial-teacher-training-itt/funding-initial-teacher-training-itt-academic-year-2023-to-2024" class="govuk-link" rel="noreferrer noopener" target="_blank">check the funding rules for this academic year (opens in a new tab)</a></p>
+
+{# It was decided to ask if the provider should be awarded a grant if the trainee was a Post Graduate Early Years trainee, full time, and on the Now Teach or Transition to Teaching initiative. In production though it was decided to ask this to all Early years trainee's for the time being #}
+
+{# if (record.route == "Early years /(postgrad/)") and (record.studyMode == "Full time") and (record.initiative == "Now Teach" or "Transition to Teaching") #}
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="awardGrant-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h1 class="govuk-fieldset__heading">
+                Should the provider be awarded a grant?
+            </h1>
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="awardGrant" name="awardGrant" type="radio" value="yes" aria-describedby="awardGrant-item-hint">
+                <label class="govuk-label govuk-radios__label" for="awardGrant">
+                    Yes
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="awardGrant-2" name="awardGrant" type="radio" value="no" aria-describedby="awardGrant-2-item-hint">
+                <label class="govuk-label govuk-radios__label" for="awardGrant-2">
+                    No
+                </label>
+            </div>
+        </div>
+    </fieldset>
+</div>
+{# endif #}
 
 {# Tiers apply is just for Early years graduate entry #}
 {# Will probably want to refactor this section if any other routes have tiers #}
