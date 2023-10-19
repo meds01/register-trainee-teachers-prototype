@@ -10,7 +10,7 @@
 
 {% set filePath = "/public/downloads/recommendOnly.csv" %}
 
-{% set navActive = 'bulk' %}
+{% set navActive = "funding" %}
 
 {% set filteredRecords = data.records | filterRecords(data) %}
 {% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
