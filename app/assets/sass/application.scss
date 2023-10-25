@@ -28,6 +28,7 @@ $govuk-assets-path: '/govuk/assets/';
 @import "helpers/width-container";
 @import "helpers/stick-to-window-when-scrolling";
 @import "utils";
+@import "media-queries";
 
 // Components that aren't in Frontend
 @import "components/admin-feature";
