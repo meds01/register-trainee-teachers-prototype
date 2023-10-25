@@ -84,7 +84,7 @@
     rows: allAwardsTableBodyRows,
     awardType: qualificationText
   }) }}
-  <hr class="govuk-section-break govuk-section-break--xl">
+  <hr class="govuk-section-break govuk-section-break--l">
 
 {% endif %}
 
@@ -133,23 +133,39 @@
     <div class="js-stick-at-bottom-when-scrolling">
 
       <form action="/bulk-update/{{ bulkPath }}/update" method="post" novalidate>
-        {# <div class="govuk-button-group govuk-!-margin-bottom-0"> #}
 
-          {{ govukButton({
-            text: buttonText
-          }) }}
+        {{ govukButton({
+          text: buttonText,
+          classes: "govuk-!-margin-bottom-4"
+        }) }}
 
-         <p class="govuk-body">
-            <a href="/bulk-update/recommend/upload-changes" class="govuk-link">
-              Change who you’ll recommend</a>
-          </p>
+        {# Tablet and higher breakpoints #}
+        <div class="app-!-display-desktop--only govuk-button-group govuk-!-margin-bottom-0">
+          <p class="govuk-body govuk-!-margin-bottom-0">
+            <a href="/bulk-update/recommend/upload-changes" class="govuk-link govuk-!-margin-right-2">
+              Change who you’ll recommend</a> <span class="govuk-!-margin-right-2">or</span>
 
-          <p class="govuk-body">
             <a href="/bulk-update/recommend/cancel-bulk-updates" class="govuk-link">
               Cancel bulk {{ "recommending trainees" if data.settings.bulkLinksInPrimaryNav == "Show bulk recommend" else "updates to records" }}</a>
           </p>
 
-        {# </div> #}
+        </div>
+
+        {# Mobile only #}
+        <div class="app-!-display-desktop--hide">
+
+          <p class="govuk-body">
+            <a href="/bulk-update/recommend/upload-changes" class="govuk-link">
+            Change who you’ll recommend</a>
+          </p>
+
+          <p class="govuk-body">
+            <a href="/bulk-update/recommend/cancel-bulk-updates" class="govuk-link">
+            Cancel bulk {{ "recommending trainees" if data.settings.bulkLinksInPrimaryNav == "Show bulk recommend" else "updates to records" }}</a>
+          </p>
+
+        </div>
+
       </form>
     </div>
   </div>
