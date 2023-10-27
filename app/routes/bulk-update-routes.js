@@ -93,9 +93,9 @@ module.exports = router => {
         row.errorMessage = utils.pickRandom(templateErrors, randomSeeded)
       }
 
-      if (!row.trainee.trainingDetails.commencementDate) {
-        row.trainee.trainingDetails.commencementDate = utils.getRandomArbitrary(6, 8) + "/" + utils.getRandomArbitrary(1, 28) + "/" + data.years.defaultCourseYear
-      }
+      // if (!row.trainee.trainingDetails.commencementDate) {
+      //   row.trainee.trainingDetails.commencementDate = utils.getRandomArbitrary(6, 8) + "/" + utils.getRandomArbitrary(1, 28) + "/" + data.years.defaultCourseYear
+      // }
 
       if (row.errorMessage == "URN not recognised" || row.errorMessage == "school is closed") {
 
@@ -172,10 +172,10 @@ module.exports = router => {
         if (selectedStatus == "error") {
           // row.errorMessage = utils.pickRandom(templateErrors, seed)
           row.errorMessage = weighted.select([
-              "Date standards met provided without a TRN or Provider trainee ID - add a TRN or Provider trainee ID or remove the date standards met", 
+              "Date standards met provided without a TRN or Provider trainee ID - add a TRN or Provider trainee ID or remove the date standards met",
               "Date standards met: '20/9/2023' - date standards met must be in the past",
               "TRN and Provider trainee ID are not for the same trainee",
-            ], 
+            ],
             [0.25, 0.5, 0.25], seed)
         }
 
@@ -304,7 +304,7 @@ module.exports = router => {
 
     let processedRows = data?.bulkUpload?.processedRows || []
     let rowsWithUpdates = processedRows.filter(row => row.uploadStatus == "updated")
-  
+
     console.log({processedRows})
     console.log(`processedRows: ${processedRows.length}`)
     console.log(`trainees to recommend: ${rowsWithUpdates.length}`)
