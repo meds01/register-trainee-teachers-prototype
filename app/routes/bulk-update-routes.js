@@ -93,9 +93,9 @@ module.exports = router => {
         row.errorMessage = utils.pickRandom(templateErrors, randomSeeded)
       }
 
-      if (!row.trainee.trainingDetails.commencementDate) {
-        row.trainee.trainingDetails.commencementDate = utils.getRandomArbitrary(6, 8) + "/" + utils.getRandomArbitrary(1, 28) + "/" + data.years.defaultCourseYear
-      }
+      // if (!row.trainee.trainingDetails.commencementDate) {
+      //   row.trainee.trainingDetails.commencementDate = utils.getRandomArbitrary(6, 8) + "/" + utils.getRandomArbitrary(1, 28) + "/" + data.years.defaultCourseYear
+      // }
 
       if (row.errorMessage == "URN not recognised" || row.errorMessage == "school is closed") {
 
