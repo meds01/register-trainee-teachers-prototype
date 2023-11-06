@@ -1,6 +1,6 @@
 {% extends "_templates/_page.html" %}
 
-{% set pageHeading = "Bulk add missing details to trainee records" %}
+{% set pageHeading = "Bulk add placement details to trainee records" %}
 {% set navActive = 'bulk' %}
 
 {% set filteredRecords = data.records | filterRecords(data) %}
@@ -48,27 +48,12 @@
         2. Add missing details
       </h2>
       <p class="govuk-body">
-        Open ‘<span class="govuk-!-font-weight-bold">{{ fileName }}</span>’ in <span class="app-nowrap">spreadsheet software</span> (for example, <span class="app-nowrap">Microsoft Excel</span>) and add the missing information.
+        Open as a CSV file and add the missing information..
       </p>
       <p class="govuk-body">
         You can leave rows or cells empty if you do not want to update those trainee records.
       </p>
-      {% if traineesWithoutStartDates %}
-        <h3 class="govuk-heading-s">Trainee start date</h3>
-        <p class="govuk-body">
-          In the column ‘Trainee start date’ add the date the trainee began their ITT.
-        </p>
-        <p class="govuk-body">
-          The date must be written in the format <span class="app-nowrap">‘DD/MM/YYYY’</span>. For example, if the trainee started on 20 September {{ data.years.defaultCourseYear }}, write <span class="app-nowrap">‘20/09/{{ data.years.defaultCourseYear }}’</span>.
-        </p>
-        <p class="govuk-body">
-          The trainee start date must be in the past.
-        </p>
-        <p class="govuk-body">
-          If a trainee does not have a start date, leave the cell empty.
-        </p>
-      {% endif %}
-      {% if traineesWithoutPlacements %}
+
         <h3 class="govuk-heading-s">Placement schools</h3>
         <p class="govuk-body">
           In the columns {{ placementRowHeading | joinify | safe }} add the school’s URN.
@@ -85,7 +70,6 @@
         <p class="govuk-body">
           If you do not have the information for a placement, leave the cell empty.
         </p>
-      {% endif %}
       <h2 class="govuk-heading-m">
         3. Upload your trainee records
       </h2>
