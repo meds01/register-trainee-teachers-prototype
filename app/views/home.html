@@ -221,9 +221,27 @@
         {% endif %}
 
       </div>
-      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
   </div>
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-full">
+
+    <div class="app-home-statuses app-home-statuses--3-up govuk-!-margin-bottom-4">
+
+      {% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
+      {% set traineeCount = traineesThatCanBeRecommended | length %}
+      {# Bulk recommend #}
+      <a href="/bulk-update/add-details/index" class="status-card">
+        <!-- TODO: Add this as a variable - temporarily hardcoded for a demo-->
+        <span class="status-card__count">33</span>
+        <span class="status-card__status">Trainees you can bulk update with missing placement data </span><span class="govuk-visually-hidden"> records. View these records.</span>
+      </a>
+    </div>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  </div>
+</div>
+
 
   {# <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
