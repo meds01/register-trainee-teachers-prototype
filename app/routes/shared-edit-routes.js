@@ -1187,7 +1187,7 @@ module.exports = router => {
   })
 
 
-  // Delete placement at a given UUID
+  // Remove placement at a given UUID
   router.get(['/:recordtype/:uuid/placements/:placementUuid/delete','/:recordtype/placements/:placementUuid/delete'], function (req, res) {
     const data = req.session.data
     let recordPath = utils.getRecordPath(req)
@@ -1200,7 +1200,7 @@ module.exports = router => {
     if (_.get(data, "record.placement.items[" + placementIndex + "]")){
       _.pullAt(data.record.placement.items, [placementIndex]) //delete item at index
       // Clear data if there are no more degrees - so the task list thinks the section is not started
-      req.flash('success', 'Placement deleted')
+      req.flash('success', 'Placement removed')
       
       // Delete degree section if it’s empty
       if (data.record.placement.items.length == 0){

@@ -1,6 +1,6 @@
 {% extends "_templates/_new-record.html" %}
 
-{% set pageHeading = "Are you sure you want to delete this placement?" %}
+{% set pageHeading = "Are you sure you want to remove this placement?" %}
 
 {% set returnLink = {
   href: 'javascript:history.back();',
@@ -19,7 +19,7 @@
 <p class="govuk-body govuk-!-margin-bottom-7">{{placement.school.schoolName}}</p>
 
 {{ govukButton({
-  text: "Yes I’m sure — delete this placement",
+  text: "Yes I’m sure — remove this placement",
   href: "./delete",
   classes: "govuk-button--warning"
 }) }}
