@@ -24,6 +24,9 @@
         <h2 class="govuk-heading-m">
           Add missing placement data
         </h2>
+      <p class="govuk-body">
+        You’ll be asked to include placement data as part of performance profile sign off for registered trainees with a course outcome in the previous academic year.
+      </p>
         <p class="govuk-body">
             You can bulk add missing placement data to {{ traineesThatCanBeUpdated.length }} trainee records. Add school placement URNs for 2 school or setting placements.
         </p>
@@ -31,9 +34,6 @@
           <a href="/bulk-update/add-details" class="govuk-link">
             Bulk add missing placement data to trainee records
           </a>
-        </p>
-        <p class="govuk-body">
-          You have {{ traineesWithoutPlacements }} trainee records that cannot be bulk uploaded and need to be updated manually.
         </p>
       {% else %}
         <p class="govuk-body">

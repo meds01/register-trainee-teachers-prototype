@@ -19,20 +19,34 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
+
+<!--      <div class="govuk-error-summary" data-module="govuk-error-summary">-->
+<!--        <div role="alert">-->
+<!--          <h2 class="govuk-error-summary__title">-->
+<!--            There is a problem-->
+<!--          </h2>-->
+<!--          <div class="govuk-error-summary__body">-->
+<!--            <ul class="govuk-list govuk-error-summary__list">-->
+<!--              <li>-->
+<!--                <a href="#">The CSV template structure has been changed</a>-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
       <h1 class="govuk-heading-l">
         <span class="govuk-caption-l">{{ data.signedInProviders | andSeparate }}</span>
         {{ pageHeading }}
       </h1>
       <p class="govuk-body">
+        You’ll be asked to include placement data as part of performance profile sign off for registered trainees with a course outcome in the previous academic year.
+      </p>
+      <p class="govuk-body">
         You have trainee records that need additional details:
       </p>
       <ul class="govuk-list govuk-list--bullet">
         <li>{{ traineesThatCanBeUpdated | length }} that can be bulk updated</li>
-        {% if filteredRecords | filterByCannotBulkUpdate | length > 0 %}
-          <li>
-            {{ filteredRecords | filterByCannotBulkUpdate | length }} that cannot be bulk updated and need to be updated manually
-          </li>
-        {% endif %}
       </ul>
       <h2 class="govuk-heading-m">
         1. Export a template file
@@ -78,7 +92,7 @@
           id: "file-upload-1",
           name: "file-upload-1",
           hint: {
-            text: "File type must be ‘csv’."
+            text: "File type must be ‘CSV’."
           },
           label: {
             text: "Upload a file"

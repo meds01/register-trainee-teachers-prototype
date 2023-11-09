@@ -7,7 +7,7 @@
 {% set traineesThatCanBeUpdated = filteredRecords | filterByCanBulkUpdate %}
 
 {% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
-{% set pageHeading = traineesThatCanBeUpdated | length  + " trainee records updated" %}
+{% set pageHeading = "Placement data submitted" %}
 
 {% block content %}
 
