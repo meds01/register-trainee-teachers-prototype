@@ -1538,7 +1538,7 @@ exports.needsStartDate = function(record) {
   return needsStartDate
 }
 
-// Check if there are outsanding actions (Either adding start date or placements details)
+// Check if there are outstanding actions (Either adding start date or placements details)
 exports.hasOutstandingActions = function(record, data = false) {
 
   data = Object.assign({}, (data || this?.ctx?.data || false))
