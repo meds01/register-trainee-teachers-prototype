@@ -142,7 +142,7 @@
           text: "The trainee’s ITT starts on " + (record.courseDetails.startDate | govukDate),
           classes: "govuk-!-margin-0"
         }) }}
-        {% elseif record | hasOutstandingActions %}
+        {% elseif record | needsStartDate %}
           {{ govukInsetText({
             text: "This trainee record requires additional details",
             classes: "govuk-!-margin-0"
