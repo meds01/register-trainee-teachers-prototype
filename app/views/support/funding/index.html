@@ -1,0 +1,117 @@
+{% extends "_templates/_page.html" %}
+
+{% set allUsers = data.users.all %}
+{% set filteredUsers = allUsers %}
+
+{% set pageHeadingShort = "Upload funding information" %}
+
+{% set pageHeading %}
+  {{ pageHeadingShort }} ({{filteredUsers | length}} {{ "user" | pluralise(filteredUsers | length) }})
+{% endset %}
+
+
+
+{% set backText = "Support home" %}
+{% set backLink = '/support' %}
+{% set navActive = "funding" %}
+
+
+{% block content %}
+{# super pulls in flash message banner #}
+{{super()}}
+
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-full">
+
+    <span class="govuk-caption-l">Support for Register</span>
+    {# This heading set separately than {{pageHeading}} as it uses html #}
+    <h1 class="govuk-heading-xl">
+      {{ pageHeadingShort }}
+    </h1>
+
+  </div>
+
+
+</div>
+
+<div class="govuk-grid-row">
+
+  <div class="govuk-grid-column-two-thirds">
+
+    <p class="govuk-body">Funding information for all providers and lead schools can be uploaded into Register at the beginning of every month.</p>
+
+    <p class="govuk-body">There are 4 x CSV files to upload separately:</p>
+
+    <ol class="govuk-list govuk-list--number">
+      <li>lead school funding payments</li>
+      <li>lead school trainee funding payments</li>
+      <li>provider funding payments</li>
+      <li>provider trainee funding payments</li>
+    </ol>
+
+    <p class="govuk-body">After the funding information has been uploaded, lead schools and providers can:</p>
+
+    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-9">
+      <li>download a CSV file by academic year</li>
+      <li>view payments by month</li>
+      <li>view running totals</li>
+      <li>view predicted payments</li>
+      <li>view payment types</li>
+    </ul>
+
+    <ol class="app-task-list">
+      <li>
+        <h2 class="app-task-list__section">
+          Lead schools
+        </h2>
+        <ul class="app-task-list__items" style="padding-left: 0">
+          <li class="app-task-list__item">
+              <span class="app-task-list__task-name">
+                <a href="upload-trainee-summary-lead.html" aria-describedby="lead-trainee-summary-upload-status">
+                  Upload trainee summary
+                </a>
+              </span>
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="lead-trainee-summary-upload-status">Not started</strong>
+          </li>
+          <li class="app-task-list__item">
+              <span class="app-task-list__task-name">
+                <a href="upload-payment-schedule-lead.html" aria-describedby="lead-payment-schedule-upload-status">
+                  Upload payment schedule
+                </a>
+              </span>
+            <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="lead-payment-schedule-upload-status">In progress</strong>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <h2 class="app-task-list__section">
+          Providers
+        </h2>
+        <ul class="app-task-list__items" style="padding-left: 0">
+          <li class="app-task-list__item">
+              <span class="app-task-list__task-name">
+                <a href="upload-trainee-summary-provider.html" aria-describedby="provider-trainee-summary-upload-status">
+                  Upload trainee summary
+                </a>
+              </span>
+            <strong class="govuk-tag app-task-list__tag" id="provider-trainee-summary-upload-status">Completed</strong>
+          </li>
+          <li class="app-task-list__item">
+              <span class="app-task-list__task-name">
+                <a href="upload-payment-schedule-provider.html" aria-describedby="provider-upload-payment-schedule-status">
+                  Upload payment schedule
+                </a>
+              </span>
+            <strong class="govuk-tag app-task-list__tag" id="provider-upload-payment-schedule-status">Completed</strong>
+          </li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+{% endblock %}
+
