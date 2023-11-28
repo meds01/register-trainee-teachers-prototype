@@ -403,4 +403,13 @@ module.exports = router => {
     }
   })
 
+
+  // Catch funding route within support
+  router.get("/support/funding/", function (req, res) {
+    res.redirect(
+      "/support/funding/index"
+    );
+  });
+
+
 }
