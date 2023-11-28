@@ -1,0 +1,59 @@
+{% extends "_templates/_page.html" %}
+
+{% set navActive = 'bulk' %}
+{% set backLink = 'false' %}
+
+{% set filteredRecords = data.records | filterRecords(data) %}
+
+{# Remaining trainees #}
+{% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
+{# {% set traineesThatCanBeRecommended = 0 %} #}
+
+{# Sets numbers for errors summary #}
+{% set errorCount     = data.bulkUpload.processedRows | where("uploadStatus", "error") | length  %}
+{% set unchangedCount = data.bulkUpload.processedRows | where("uploadStatus", "unchanged") | length  %}
+{% set updatedCount   = data.bulkUpload.processedRows | where("uploadStatus", "updated") | length  %}
+
+{% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "updated") %}
+
+{# Get an array of the trainees #}
+{% set processedTrainees = processedRows | lodash("map", "trainee") %}
+
+{% set pageHeading = "File processed successfully" %}
+
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      {{ govukPanel({
+        titleText: pageHeading,
+        classes: "govuk-!-margin-bottom-7"
+      }) }}
+
+      <p class="govuk-body">
+        Integer pellentesque lacus est, nec suscipit ipsum egestas ut. Cras varius auctor augue ut ultricies. Sed pharetra, orci non porta laoreet, turpis libero fermentum nibh, ac posuere odio eros et ante. Vivamus eleifend quam vel ex cursus, id mollis sapien tristique.
+      </p>
+      <p class="govuk-body">Sed tincidunt ante a imperdiet sagittis. Pellentesque at tincidunt ex. Donec quam nisi, imperdiet ut condimentum in, rutrum fermentum tortor. Donec aliquet egestas molestie. Maecenas vitae rhoncus neque. Nunc vehicula enim elit, ut iaculis turpis placerat ac. Donec sit amet nisl non nunc lacinia ultricies vitae a magna.
+      </p>
+
+      <h2 class="govuk-heading-m">
+        Next steps
+      </h2>
+
+      {% if traineesThatCanBeRecommended | length %}
+        <p class="govuk-body">
+          You can now:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li><a href="index" class="govuk-link">Upload more funding information</a></li>
+          <li><a href="../index" class="govuk-link">Go to the support home page</a></li>
+        </ul>
+      {% endif %}
+
+      {{data | log}}
+    </div>
+  </div>
+
+{% endblock %}

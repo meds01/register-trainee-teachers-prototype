@@ -3,7 +3,7 @@
 {% set allUsers = data.users.all %}
 {% set filteredUsers = allUsers %}
 
-{% set pageHeadingShort = "Settings" %}
+{% set pageHeadingShort = "Upload funding information" %}
 
 {% set pageHeading %}
   {{ pageHeadingShort }} ({{filteredUsers | length}} {{ "user" | pluralise(filteredUsers | length) }})
