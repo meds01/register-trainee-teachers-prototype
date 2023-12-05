@@ -1,6 +1,6 @@
 {% extends "_templates/_page.html" %}
 
-{% set navActive = 'bulk' %}
+{% set navActive = "funding" %}
 {% set backLink = 'false' %}
 
 {% set filteredRecords = data.records | filterRecords(data) %}
@@ -32,25 +32,10 @@
       }) }}
 
       <p class="govuk-body">
-        Integer pellentesque lacus est, nec suscipit ipsum egestas ut. Cras varius auctor augue ut ultricies. Sed pharetra, orci non porta laoreet, turpis libero fermentum nibh, ac posuere odio eros et ante. Vivamus eleifend quam vel ex cursus, id mollis sapien tristique.
-      </p>
-      <p class="govuk-body">Sed tincidunt ante a imperdiet sagittis. Pellentesque at tincidunt ex. Donec quam nisi, imperdiet ut condimentum in, rutrum fermentum tortor. Donec aliquet egestas molestie. Maecenas vitae rhoncus neque. Nunc vehicula enim elit, ut iaculis turpis placerat ac. Donec sit amet nisl non nunc lacinia ultricies vitae a magna.
+        Providers and lead schools can now view their monthly funding payments.
       </p>
 
-      <h2 class="govuk-heading-m">
-        Next steps
-      </h2>
 
-      {% if traineesThatCanBeRecommended | length %}
-        <p class="govuk-body">
-          You can now:
-        </p>
-
-        <ul class="govuk-list govuk-list--bullet">
-          <li><a href="index" class="govuk-link">Upload more funding information</a></li>
-          <li><a href="../index" class="govuk-link">Go to the support home page</a></li>
-        </ul>
-      {% endif %}
 
       {{data | log}}
     </div>
