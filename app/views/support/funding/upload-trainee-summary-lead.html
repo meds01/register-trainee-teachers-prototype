@@ -40,30 +40,6 @@
 
           <input name="successFlash" type="hidden" value="File uploaded">
 
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="funding-month">
-              Select applicable month
-            </label>
-            <div id="funding-month-hint" class="govuk-hint">
-              Please select the month you are uploading funding information for.
-            </div>
-            <select class="govuk-select" id="funding-month" name="funding-month" aria-describedby="funding-month-hint">
-              <option value="choose" selected>Choose month</option>
-              <option value="january">January</option>
-              <option value="february">February</option>
-              <option value="march">March</option>
-              <option value="april">April</option>
-              <option value="may">May</option>
-              <option value="june">June</option>
-              <option value="july">July</option>
-              <option value="august">August</option>
-              <option value="september">September</option>
-              <option value="october">October</option>
-              <option value="november">November</option>
-              <option value="december">December</option>
-            </select>
-          </div>
-
           {{ govukButton({
             text: "Upload the file"
           }) }}
