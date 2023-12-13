@@ -5,17 +5,6 @@
 
 {% set filteredRecords = data.records | filterRecords(data) %}
 
-{# Remaining trainees #}
-{% set traineesThatCanBeRecommended = filteredRecords | filterByReadyToRecommend %}
-{# {% set traineesThatCanBeRecommended = 0 %} #}
-
-{# Sets numbers for errors summary #}
-{% set errorCount     = data.bulkUpload.processedRows | where("uploadStatus", "error") | length  %}
-{% set unchangedCount = data.bulkUpload.processedRows | where("uploadStatus", "unchanged") | length  %}
-{% set updatedCount   = data.bulkUpload.processedRows | where("uploadStatus", "updated") | length  %}
-
-{% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "updated") %}
-
 {# Get an array of the trainees #}
 {% set processedTrainees = processedRows | lodash("map", "trainee") %}
 
@@ -35,7 +24,12 @@
         Providers and lead schools can now view their monthly funding payments.
       </p>
 
+      <h2 class="govuk-heading-m">Next steps</h2>
 
+      <ul class="govuk-list govuk-list--bullet">
+        <li><a href="/support/funding/index" class="govuk-link">Upload more funding information</a></li>
+        <li><a href="/support/" class="govuk-link">Support home</a></li>
+      </ul>
 
       {{data | log}}
     </div>
