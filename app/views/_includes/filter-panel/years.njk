@@ -85,7 +85,7 @@
           <option value="End year: {{year}}" {{?selected}}>End: {{year}}{{?currentYearText}}</option>
         {% endfor %}
       </optgroup>
-  
+
   </select>
 </div>
 {% endset %}
@@ -154,6 +154,12 @@
       }
     },
     items: [
+      {
+        text: "2023 to 2024 academic year only",
+        text: "2023 to 2024",
+        value: "2023 to 2024",
+        checked: checked(query.filterAcademicYears, "2023 to 2024")
+      },
       {
         text: "2022 to 2023 academic year only",
         text: "2022 to 2023",
