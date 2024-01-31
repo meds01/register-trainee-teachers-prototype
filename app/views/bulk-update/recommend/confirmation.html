@@ -16,11 +16,15 @@
 
 {% set processedRows = data.bulkUpload.processedRows | where("uploadStatus", "updated") %}
 
+
 {# Get an array of the trainees #}
 {% set processedTrainees = processedRows | lodash("map", "trainee") %}
 
-{% set pageHeading = updatedCount + " trainees recommended for " + processedTrainees | getQualifications | orSeparate %}
+<!--TODO: Added some fixed values for testing as validation is out of scope for MVP and we've shortened the flow -->
 
+
+<!--{% set pageHeading = updatedCount + " trainees recommended for " + processedTrainees | getQualifications | orSeparate %}-->
+{% set pageHeading = "10 trainees recommended for QTS or EYTS" %}
 
 {% block content %}
 
@@ -53,7 +57,7 @@
         <p class="govuk-body">You can now <a href="/records" class="govuk-link">view your list of registered trainees</a>.</p>
       {% endif %}
 
-      
+
 
       {{data | log}}
     </div>
