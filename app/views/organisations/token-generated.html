@@ -1,0 +1,45 @@
+{% extends "_templates/_page.html" %}
+
+{% set pageHeading %}
+  Organisation – {{ provider.name }}
+{% endset %}
+
+{# {% set navActive = "provider" %} #}
+
+{% set backText = "Token Management" %}
+{% set backLink = '/organisations/:providerUuid/token-manage' %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds-from-desktop">
+
+        <h1 class="govuk-heading-l">{{provider.name}}</h1>
+
+        {% set shouldShowOrganisationSwitchLink = (data.settings.userProviders | length > 1) and not data.isAdmin and not data.isImpersonating | falsify  %}
+
+
+        {% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+        {{ govukPanel({
+        titleText: "Token generated",
+        html: "Your API token is<br><strong>PGDV-1832-1234-6023</strong>"
+        }) }}
+
+        <form action="#" method="post" novalidate>
+
+          <p>Make sure to copy your API token now as you will not be able to see it again.</p>
+
+          {% from "govuk/components/button/macro.njk" import govukButton %}
+
+            {{ govukButton({
+            text: "Copy token"
+            }) }}
+
+          <p class="govuk-body"><a href="./token-manage" class="govuk-link">Continue to manage tokens</a></p>
+        </form>
+
+      </div>
+    </div>
+
+{% endblock %}

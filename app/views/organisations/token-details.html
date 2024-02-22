@@ -1,0 +1,115 @@
+{% extends "_templates/_page.html" %}
+
+{% set pageHeading %}
+  Organisation – {{ provider.name }}
+{% endset %}
+
+{# {% set navActive = "provider" %} #}
+
+{% set backText = "Token Management" %}
+{% set backLink = '/organisations/:providerUuid/token-manage' %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h1 class="govuk-heading-l">{{provider.name}}</h1>
+
+        {% set shouldShowOrganisationSwitchLink = (data.settings.userProviders | length > 1) and not data.isAdmin and not data.isImpersonating | falsify  %}
+
+        <h2 class="govuk-heading-l">Create a token</h2>
+
+        <p>Actualize the plan and markets. Going forward, we should harness the asset. Leverage skillsets to achieve maximum market share.</p>
+
+        <form action="/organisations/:providerUuid/token-generated" method="post" novalidate>
+        {% from "govuk/components/select/macro.njk" import govukSelect %}
+
+        {{ govukSelect({
+        id: "select_vendor",
+        name: "select_vendor",
+        classes: "govuk-!-width-full",
+        label: {
+        text: "Vendor",
+        classes: "govuk-!-font-weight-bold"
+        },
+        items: [
+        {
+        value: "vendor_1",
+        text: "Webury Hill SCITT",
+        selected: true
+        },
+        {
+        value: "vendor_2",
+        text: "Vendor 3"
+        },
+        {
+        value: "vendor_3",
+        text: "Vendor 3"
+        },
+        {
+        value: "vendor_4",
+        text: "Vendor 4"
+        }
+        ]
+        }) }}
+
+        {% from "govuk/components/input/macro.njk" import govukInput %}
+
+        {{ govukInput({
+        label: {
+        text: "Token name (optional)",
+        classes: "govuk-!-font-weight-bold"
+        },
+        hint: {
+        text: "You can give this token a name to identify where it's being used"
+        },
+        classes: "govuk-input--extra-letter-spacing",
+        id: "tokenName",
+        name: "tokenName",
+        spellcheck: false,
+        value: ""
+        }) }}
+
+
+        {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+        {{ govukDateInput({
+        id: "token_expiration_date",
+        namePrefix: "token_expiration_date",
+        fieldset: {
+        legend: {
+        text: "Expiration date (optional)",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--s govuk-!-font-weight-bold"
+        }
+        },
+        hint: {
+        text: "For example, 27 3 2024"
+        }
+        }) }}
+
+        {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+        {{ govukTextarea({
+        name: "token_description",
+        id: "token_description",
+        label: {
+        text: "Description (optional)",
+        classes: "govuk-!-font-weight-bold"
+        }
+        }) }}
+
+          <div class="govuk-button-group">
+            {{ govukButton({
+            text: "Generate token"
+            }) }}
+
+            <a class="govuk-link" href="#">Cancel</a>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+{% endblock %}

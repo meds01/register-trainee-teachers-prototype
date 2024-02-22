@@ -1,0 +1,125 @@
+{% extends "_templates/_page.html" %}
+
+{% set pageHeading %}
+  Organisation – {{ provider.name }}
+{% endset %}
+
+{# {% set navActive = "provider" %} #}
+
+{% set backText = "Home" %}
+{% set backLink = '/home' %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h1 class="govuk-heading-l">{{provider.name}}</h1>
+        <h1 class="govuk-heading-l">{{ token }}</h1>
+
+        {% set shouldShowOrganisationSwitchLink = (data.settings.userProviders | length > 1) and not data.isAdmin and not data.isImpersonating | falsify  %}
+
+        <h2 class="govuk-heading-l">Token management</h2>
+
+        <p>Actualize the plan and markets. Going forward, we should harness the asset. Leverage skillsets to achieve maximum market share.</p>
+      </div>
+    </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full-from-desktop">
+
+        {% from "govuk/components/table/macro.njk" import govukTable %}
+
+        {{ govukTable({
+        caption: "Existing tokens",
+        captionClasses: "govuk-table__caption--m",
+        firstCellIsHeader: false,
+        head: [
+        {
+        text: "Token name"
+        },
+        {
+        text: "Description"
+        },
+        {
+        text: "Last used"
+        },
+        {
+        text: "Expiration date"
+        },
+        {
+        text: "Action"
+        }
+        ],
+        rows: [
+        [
+        {
+        text: "Token 1"
+        },
+        {
+        text: "Maecenas at odio odio"
+        },
+        {
+        text: "01/02/2024"
+        },
+        {
+        text: "01/12/2024"
+        },
+        {
+        html: "<a>Revoke</a>",
+        href: "#",
+        classes: "govuk-link"
+        }
+        ],
+        [
+        {
+        text: "For Ernest Ryan"
+        },
+        {
+        text: "Nulla dapibus vitae nisl vitae venenatis"
+        },
+        {
+        text: "Never"
+        },
+        {
+        text: "01/12/2024"
+        },
+        {
+        html: "<a>Revoke</a>",
+        href: "#"
+        }
+        ],
+        [
+        {
+        text: "Carlie Yundt's"
+        },
+        {
+        text: "Vestibulum lobortis neque libero."
+        },
+        {
+        text: "19/02/2024"
+        },
+        {
+        text: "01/12/2024"
+        },
+        {
+        html: "<a>Revoke</a>",
+        href: "#",
+        classes: "govuk-link"
+        }
+        ]
+        ]
+        }) }}
+
+        <form action="/organisations/:providerUuid/token-details" method="get" novalidate>
+          <div class="govuk-button-group">
+            {{ govukButton({
+            text: "Generate a new token"
+            }) }}
+
+            <a class="govuk-link" href="#">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+{% endblock %}
