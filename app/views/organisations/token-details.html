@@ -6,8 +6,8 @@
 
 {# {% set navActive = "provider" %} #}
 
-{% set backText = "Token Management" %}
-{% set backLink = '/organisations/:providerUuid/token-manage' %}
+{% set backText = "Back" %}
+{% set backLink = 'token-manage' %}
 
 {% block content %}
 
@@ -21,7 +21,6 @@
 
         <p class="govuk-body">This API token is unique to your organisation.</p>
 
-        <form action="/organisations/:providerUuid/token-generated" method="post" novalidate>
         {% from "govuk/components/select/macro.njk" import govukSelect %}
         <p class="govuk-body">You must make sure the token is securely sent to the developers managing your Register API integration.</p>
 
@@ -53,6 +52,7 @@
         }
         ]
         }) }}
+        <form action="/organisations/:providerUuid/token-generated" method="post" novalidate>
 
         {% from "govuk/components/input/macro.njk" import govukInput %}
 
