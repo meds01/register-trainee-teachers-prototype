@@ -42,8 +42,30 @@
 
         {% from "govuk/components/table/macro.njk" import govukTable %}
 
+        <table class="govuk-table govuk-!-margin-bottom-9">
+          <caption class="govuk-table__caption govuk-table__caption--m">Active tokens</caption>
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Token name</th>
+            <th scope="col" class="govuk-table__header">Description</th>
+            <th scope="col" class="govuk-table__header">Last used</th>
+            <th scope="col" class="govuk-table__header">Expiration date</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+          </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Bayer Group</td>
+            <td class="govuk-table__cell">Production access for Bayer Group vendor</td>
+            <td class="govuk-table__cell">24/02/2024</td>
+            <td class="govuk-table__cell"></td>
+            <td class="govuk-table__cell"><a href="#" class="govuk-link govuk-link--no-visited-state">Revoke</a></td>
+          </tr>
+          </tbody>
+        </table>
+
         {{ govukTable({
-        caption: "Existing tokens",
+        caption: "Expired tokens",
         captionClasses: "govuk-table__caption--m",
         firstCellIsHeader: false,
         head: [
@@ -58,80 +80,62 @@
         },
         {
         text: "Expiration date"
-        },
-        {
-        text: "Action"
         }
         ],
         rows: [
         [
         {
-        text: "Token 1"
+        text: "Bayer Group Vendor Test"
         },
         {
-        text: "Maecenas at odio odio"
+        text: "Test access for new vendor Bayer Group"
         },
         {
-        text: "01/02/2024"
+        text: "15/01/2024"
         },
         {
-        text: "01/12/2024"
+        text: "25/01/2024"
+        }
+        ]],
+        classes: "govuk-!-margin-bottom-9"
+        }) }}
+
+        {{ govukTable({
+        caption: "Revoked tokens",
+        captionClasses: "govuk-table__caption--m",
+        firstCellIsHeader: false,
+        head: [
+        {
+        text: "Token name"
         },
         {
-        html: "<a>Revoke</a>",
-        href: "#",
-        classes: "govuk-link"
+        text: "Description"
+        },
+        {
+        text: "Last used"
+        },
+        {
+        text: "Revoked date"
         }
         ],
+        rows: [
         [
         {
-        text: "For Ernest Ryan"
+        text: "Weimann-Reinger"
         },
         {
-        text: "Nulla dapibus vitae nisl vitae venenatis"
+        text: "Production access for vendor Weimann-Reinger plc"
         },
         {
-        text: "Never"
+        text: "19/01/2024"
         },
         {
-        text: "01/12/2024"
-        },
-        {
-        html: "<a>Revoke</a>",
-        href: "#"
-        }
-        ],
-        [
-        {
-        text: "Carlie Yundt's"
-        },
-        {
-        text: "Vestibulum lobortis neque libero."
-        },
-        {
-        text: "19/02/2024"
-        },
-        {
-        text: "01/12/2024"
-        },
-        {
-        html: "<a>Revoke</a>",
-        href: "#",
-        classes: "govuk-link"
+        text: "30/01/2024"
         }
         ]
         ]
         }) }}
 
-        <form action="/organisations/:providerUuid/token-details" method="get" novalidate>
-          <div class="govuk-button-group">
-            {{ govukButton({
-            text: "Generate a new token"
-            }) }}
-
-            <a class="govuk-link" href="#">Cancel</a>
-          </div>
-        </form>
 
       </div>
     </div>
