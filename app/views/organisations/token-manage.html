@@ -18,9 +18,22 @@
 
         {% set shouldShowOrganisationSwitchLink = (data.settings.userProviders | length > 1) and not data.isAdmin and not data.isImpersonating | falsify  %}
 
-        <h2 class="govuk-heading-l">Token management</h2>
+        <h2 class="govuk-heading-l">Manage your API tokens</h2>
 
-        <p>Actualize the plan and markets. Going forward, we should harness the asset. Leverage skillsets to achieve maximum market share.</p>
+        <p class="govuk-body">These API tokens are unique to your organisation.</p>
+
+        <p class="govuk-body">You must make sure the token is securely sent to the developers managing your Register API integration.</p>
+
+        <form action="/organisations/:providerUuid/token-details" method="get" novalidate>
+          <div class="govuk-button-group">
+            {{ govukButton({
+            text: "Generate a new token"
+            }) }}
+
+            <a class="govuk-link" href="organisation.html">Cancel</a>
+          </div>
+        </form>
+
       </div>
     </div>
     <div class="govuk-grid-row">
